@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw spring-boot:run)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(cmd /c \"dir /b `\"C:\\\\Users\\\\ASUS TUF\\\\AppData\\\\Roaming\\\\JetBrains\\\\IntelliJIdea2026.1`\"\")",
+      "Bash(.\\\\mvnw spring-boot:run -DskipTests)",
+      "Read(//c/Program Files/JetBrains/**)",
+      "Read(//c/Users/ASUS TUF/AppData/Local/JetBrains//**)",
+      "WebFetch(domain:plugins.jetbrains.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(C:/Program Files/JetBrains/IntelliJ IDEA 2026.1/bin/idea64.exe installPlugins *)",
+      "Bash(claude --version)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\\\\blog\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\\\\blog\" -Recurse -Include \"*.java\", \"pom.xml\", \"application.properties\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\" -Directory | Where-Object { $_.Name -match \"projet|project|^D$|^Z$\" } | Select-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\" | Where-Object { $_.PSIsContainer } | Format-Table Name)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\\\\blog\" -Recurse)",
+      "Bash(Select-Object -First 100 FullName)",
+      "Bash(pkill -f \"spring-boot\")",
+      "Bash(pkill -f \"blog.*jar\")",
+      "Bash(mvnw.cmd compile *)",
+      "Bash(grep -Hm1 ^description: 'C:\\\\Users\\\\ASUS TUF\\\\Downloads\\\\blog/.claude/skills/*/SKILL.md')",
+      "PowerShell(netstat *)",
+      "PowerShell(curl.exe -s -o NUL -w \"%{http_code}\" http://localhost:8080/swagger-ui.html)",
+      "PowerShell(curl.exe -s -w \"\\\\nHTTP %{http_code}\" http://localhost:8080/v3/api-docs | Select-Object -First 5)",
+      "PowerShell(curl.exe -s -o NUL -w \"%{http_code}\" http://localhost:8080/api/auth/login -X POST -H \"Content-Type: application/json\" -d \"{\\\\\"email\\\\\":\\\\\"test@test.com\\\\\",\\\\\"motDePasse\\\\\":\\\\\"test\\\\\"}\")",
+      "PowerShell(curl.exe -s -L -w \"\\\\nHTTP %{http_code}\" \"http://localhost:8080/swagger-ui/index.html\" -o NUL)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(curl.exe -s -o NUL -w \"%{http_code}\" http://localhost:8080/)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\ASUS TUF\\\\Downloads\\\\blog\" -Recurse)",
+      "Bash(Head-Object 50)",
+      "Bash(gh --version)",
+      "Bash(git --version)",
+      "PowerShell(gh *)"
+    ]
+  }
+}

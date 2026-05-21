@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CharityApp — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&family=Playfair+Display:wght@700;800;900&family=JetBrains+Mono:wght@400;700&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#F5F6FA;--bg2:#FFFFFF;--bg3:#EEF0F5;
+  --em:#10b981;--em2:#059669;--em3:#047857;
+  --em-glow:rgba(16,185,129,.25);
+  --gold:#f59e0b;--gold2:#d97706;
+  --glass:rgba(0,0,0,.04);--glass2:rgba(0,0,0,.06);--glass3:rgba(16,185,129,.06);
+  --border:rgba(0,0,0,.1);--border-em:rgba(16,185,129,.3);
+  --txt:#111827;--txt2:#374151;--txt3:#6B7280;
+  --rose:#f43f5e;--blue:#2563EB;--amber:#f59e0b;
+  --r:14px;--r2:20px;--sidebar:260px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border-em)}
+
+
+/* ── LOGIN ── */
+#login-screen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#f0fdf4 0%,#eff6ff 100%);
+  padding:20px;
+}
+.login-card{
+  background:#fff;border-radius:20px;padding:44px 40px;
+  width:100%;max-width:400px;
+  box-shadow:0 4px 6px rgba(0,0,0,.04),0 20px 60px rgba(0,0,0,.08);
+  border:1px solid rgba(0,0,0,.07);
+}
+.login-logo{text-align:center;margin-bottom:36px}
+.login-logo-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:60px;height:60px;border-radius:16px;
+  background:linear-gradient(135deg,#059669,#10b981);
+  box-shadow:0 0 0 8px rgba(16,185,129,.1);
+  margin-bottom:16px;
+}
+.login-logo-icon svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.login-logo h1{font-family:'Poppins',sans-serif;font-size:1.45rem;font-weight:800;color:#111827;margin-bottom:4px}
+.login-logo p{font-size:.82rem;color:#6B7280}
+.form-group{margin-bottom:18px}
+.form-group label{
+  display:flex;align-items:center;gap:7px;
+  font-size:.72rem;font-weight:700;color:#374151;
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;
+}
+.form-group label svg{width:13px;height:13px;stroke:#10b981;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.form-group input{
+  width:100%;padding:13px 16px;
+  background:#F9FAFB;border:1.5px solid #E5E7EB;border-radius:11px;
+  font-size:.93rem;color:#111827;outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+  font-family:'Inter',sans-serif;
+}
+.form-group input::placeholder{color:#9CA3AF}
+.form-group input:focus{
+  border-color:#10b981;background:#fff;
+  box-shadow:0 0 0 4px rgba(16,185,129,.1);
+}
+.btn-login{
+  width:100%;padding:14px;margin-top:8px;
+  background:linear-gradient(135deg,#059669,#10b981);
+  color:#fff;border:none;border-radius:11px;
+  font-size:.95rem;font-weight:700;letter-spacing:.02em;
+  cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+  box-shadow:0 4px 14px rgba(16,185,129,.35);
+}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.45)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.login-error{
+  background:#fff1f2;border:1.5px solid #fecdd3;color:#e11d48;
+  padding:10px 14px;border-radius:9px;font-size:.82rem;
+  margin-top:14px;display:none;
+}
+.login-hint{
+  background:#f0fdf4;border:1px solid #bbf7d0;border-radius:11px;
+  padding:13px 16px;margin-top:20px;font-size:.78rem;color:#374151;line-height:1.75;
+}
+.login-hint strong{
+  display:block;color:#059669;margin-bottom:5px;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+}
+@media(max-width:480px){.login-card{padding:32px 24px}}
+
+/* ── APP ── */
+#app-screen{display:none;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);
+  background:var(--bg2);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;z-index:100;
+}
+.sidebar::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--em),transparent);
+}
+.sb-logo{padding:22px 20px 18px;border-bottom:1px solid var(--border)}
+.sb-logo-inner{display:flex;align-items:center;gap:12px}
+.sb-logo-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--em3),var(--em));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 0 15px var(--em-glow);
+}
+.sb-logo-icon svg{width:19px;height:19px}
+.sb-logo h2{
+  font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:800;
+  background:linear-gradient(135deg,var(--em),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sb-logo p{font-size:.62rem;color:var(--txt3);margin-top:1px}
+.sb-user{
+  margin:12px;padding:11px 13px;background:var(--glass);border:1px solid var(--border);
+  border-radius:11px;display:flex;align-items:center;gap:10px;
+}
+.sb-av-wrap{position:relative}
+.sb-av{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--em3),var(--em));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;flex-shrink:0;box-shadow:0 0 10px var(--em-glow);
+}
+.sb-av-dot{
+  position:absolute;bottom:1px;right:1px;width:8px;height:8px;
+  border-radius:50%;background:#22c55e;border:2px solid var(--bg2);
+}
+.sb-user-info p{font-size:.8rem;font-weight:600;color:var(--txt)}
+.sb-user-info span{font-size:.67rem;color:var(--em);font-weight:500}
+nav{padding:8px 0;flex:1;overflow-y:auto}
+.nav-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);padding:14px 20px 5px;font-weight:600}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:10px 18px;
+  cursor:pointer;font-size:.845rem;font-weight:500;color:var(--txt2);
+  position:relative;transition:all .2s;border-left:2px solid transparent;
+}
+.nav-item::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--glass3),transparent);opacity:0;transition:opacity .2s;
+}
+.nav-item:hover{color:var(--txt);border-left-color:rgba(16,185,129,.4)}
+.nav-item:hover::before{opacity:1}
+.nav-item.active{color:var(--em);border-left-color:var(--em);font-weight:600}
+.nav-item.active::before{opacity:1}
+.nav-icon{
+  width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:var(--glass);flex-shrink:0;transition:all .2s;
+}
+.nav-item.active .nav-icon{background:rgba(16,185,129,.15);box-shadow:0 0 10px rgba(16,185,129,.2)}
+.nav-icon svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sb-foot{
+  padding:12px 18px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sb-foot span{font-size:.65rem;color:var(--txt3)}
+.btn-logout{
+  font-size:.7rem;padding:5px 11px;background:rgba(244,63,94,.1);color:#fda4af;
+  border:1px solid rgba(244,63,94,.2);border-radius:6px;cursor:pointer;
+  transition:all .15s;font-family:'Inter',sans-serif;
+}
+.btn-logout:hover{background:rgba(244,63,94,.2);color:#fff}
+.btn-lang{
+  font-size:.72rem;padding:5px 11px;background:rgba(16,185,129,.1);color:var(--em);
+  border:1px solid rgba(16,185,129,.25);border-radius:6px;cursor:pointer;
+  transition:all .15s;font-family:'Inter',sans-serif;font-weight:700;letter-spacing:.03em;
+}
+.btn-lang:hover{background:rgba(16,185,129,.2);border-color:var(--em)}
+
+/* ── RTL (Arabe) ── */
+[dir="rtl"]{font-family:'Tajawal',sans-serif}
+[dir="rtl"] .sidebar{left:auto;right:0;border-right:none;border-left:1px solid var(--border)}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sidebar)}
+[dir="rtl"] .nav-item{border-left:none;border-right:2px solid transparent;flex-direction:row-reverse}
+[dir="rtl"] .nav-item:hover{border-right-color:rgba(16,185,129,.4)}
+[dir="rtl"] .nav-item.active{border-right-color:var(--em)}
+[dir="rtl"] .topbar{flex-direction:row-reverse}
+[dir="rtl"] .card-h{flex-direction:row-reverse}
+[dir="rtl"] .sb-foot{flex-direction:row-reverse}
+[dir="rtl"] .sb-user{flex-direction:row-reverse}
+[dir="rtl"] th,[dir="rtl"] td{text-align:right}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column}
+.topbar{
+  background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 28px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar h3{
+  font-size:.98rem;font-weight:700;color:var(--txt);
+}
+.btn-refresh{
+  display:flex;align-items:center;gap:6px;padding:8px 15px;background:var(--glass);
+  color:var(--txt2);border:1px solid var(--border);border-radius:8px;
+  font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;
+}
+.btn-refresh:hover{background:var(--glass3);color:var(--em);border-color:var(--border-em)}
+.btn-refresh svg{width:13px;height:13px;transition:transform .4s;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+.btn-refresh:hover svg{transform:rotate(180deg)}
+.content{padding:26px 28px;position:relative}
+
+/* ── SECTIONS ── */
+.section{display:none}
+.section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+.stat{
+  background:var(--glass);border:1px solid var(--border);border-radius:var(--r2);
+  padding:22px;position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;cursor:default;
+}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--_grad)}
+.stat:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.stat-s1{--_grad:linear-gradient(90deg,var(--em3),var(--em))}
+.stat-s2{--_grad:linear-gradient(90deg,#1d4ed8,var(--blue))}
+.stat-s3{--_grad:linear-gradient(90deg,var(--gold2),var(--gold))}
+.stat-s4{--_grad:linear-gradient(90deg,#be185d,var(--rose))}
+.stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stat-ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center}
+.stat-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-g{background:rgba(16,185,129,.15);color:var(--em)}
+.ic-b{background:rgba(59,130,246,.15);color:var(--blue)}
+.ic-a{background:rgba(245,158,11,.15);color:var(--gold)}
+.ic-r{background:rgba(244,63,94,.15);color:var(--rose)}
+.stat-trend{font-size:.68rem;color:var(--em);background:rgba(16,185,129,.1);padding:3px 8px;border-radius:20px;font-weight:600}
+.stat-v{font-size:1.75rem;font-weight:800;letter-spacing:-.04em;font-family:'Poppins',sans-serif;line-height:1}
+.stat-l{font-size:.73rem;color:var(--txt3);margin-top:4px;font-weight:500}
+
+/* ── CARD ── */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:20px}
+.card-h{
+  padding:16px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.02);
+}
+.card-h-left{display:flex;align-items:center;gap:10px}
+.card-h h4{font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-h h4 svg{width:15px;height:15px;color:var(--em);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.badge-count{
+  font-size:.68rem;background:rgba(16,185,129,.1);color:var(--em);
+  border:1px solid rgba(16,185,129,.2);padding:3px 10px;border-radius:20px;font-weight:600;
+}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{
+  text-align:left;padding:10px 16px;font-size:.66rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);
+  background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:13px 16px;border-bottom:1px solid rgba(0,0,0,.07);vertical-align:middle;color:var(--txt2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(16,185,129,.025);color:var(--txt)}
+.td-strong{font-weight:600;color:var(--txt)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
+.b-green{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+.b-blue{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.b-amber{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+.b-rose{background:rgba(244,63,94,.12);color:#fb7185;border:1px solid rgba(244,63,94,.2)}
+.b-gray{background:var(--glass);color:var(--txt2);border:1px solid var(--border)}
+
+/* ── PROGRESS ── */
+.prog-wrap{min-width:110px}
+.prog-lbl{font-size:.67rem;color:var(--txt3);display:flex;justify-content:space-between;margin-bottom:5px}
+.prog-bar{height:4px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden}
+.prog-fill{
+  height:100%;background:linear-gradient(90deg,var(--em3),var(--em));
+  border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 6px var(--em-glow);
+}
+
+/* ── AVATAR ── */
+.av-cell{display:flex;align-items:center;gap:9px}
+.av-sm{
+  width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;
+  justify-content:center;font-size:.68rem;font-weight:700;color:#fff;
+  flex-shrink:0;font-family:'Poppins',sans-serif;
+}
+
+/* ── ACTION BUTTONS ── */
+.action-btns{display:flex;gap:5px}
+.btn-edit,.btn-del{
+  padding:4px 9px;border:none;border-radius:6px;font-size:.7rem;
+  font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;gap:3px;
+}
+.btn-edit{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.18)}
+.btn-edit:hover{background:rgba(59,130,246,.22)}
+.btn-del{background:rgba(244,63,94,.08);color:#fb7185;border:1px solid rgba(244,63,94,.18)}
+.btn-del:hover{background:rgba(244,63,94,.2)}
+.btn-edit svg,.btn-del svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── FAB ── */
+.fab{
+  position:fixed;bottom:30px;right:30px;width:56px;height:56px;
+  border-radius:50%;background:#2563EB;
+  color:#fff;border:none;font-size:1.5rem;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 4px 20px rgba(37,99,235,.4),0 8px 40px rgba(0,0,0,.15);
+  z-index:200;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+}
+.fab.show{display:flex;animation:fab-in .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes fab-in{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1) rotate(0)}}
+.fab:hover{transform:scale(1.12) rotate(90deg);box-shadow:0 6px 28px rgba(37,99,235,.5)}
+.fab svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border-em);border-radius:var(--r2);
+  width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 0 60px rgba(16,185,129,.12),0 30px 60px rgba(0,0,0,.6);
+  animation:modal-in .22s cubic-bezier(.34,1.1,.64,1);
+}
+.modal-lg{max-width:640px}
+@keyframes modal-in{from{opacity:0;transform:scale(.93) translateY(-8px)}to{opacity:1;transform:none}}
+.modal-h{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(16,185,129,.03);
+}
+.modal-h h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--txt)}
+.modal-h h3 svg{width:16px;height:16px;color:var(--em);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-close{
+  width:30px;height:30px;border-radius:7px;background:var(--glass);
+  border:1px solid var(--border);color:var(--txt2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:.9rem;
+}
+.btn-close:hover{background:rgba(244,63,94,.15);color:#fb7185;border-color:rgba(244,63,94,.3)}
+.modal-body{padding:24px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modal-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:.7rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em}
+.field input,.field select,.field textarea{
+  padding:11px 13px;background:var(--glass);border:1px solid var(--border);
+  border-radius:9px;font-size:.875rem;color:var(--txt);outline:none;
+  transition:all .2s;font-family:'Inter',sans-serif;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--txt3)}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--em);background:var(--glass3);box-shadow:0 0 0 3px rgba(16,185,129,.08);
+}
+.field select option{background:var(--bg2);color:var(--txt)}
+.field textarea{resize:vertical;min-height:72px}
+.modal-footer{
+  padding:16px 24px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:9px;background:rgba(255,255,255,.01);
+}
+.btn-cancel{
+  padding:9px 18px;background:var(--glass);color:var(--txt2);border:1px solid var(--border);
+  border-radius:8px;font-size:.855rem;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;
+}
+.btn-cancel:hover{background:var(--glass2);color:var(--txt)}
+.btn-submit{
+  padding:9px 22px;background:#2563EB;
+  color:#fff;border:none;border-radius:8px;font-size:.855rem;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;
+  box-shadow:0 4px 14px rgba(37,99,235,.3);
+}
+.btn-submit:hover{transform:translateY(-1px);background:#1d4ed8;box-shadow:0 6px 20px rgba(37,99,235,.4)}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* ── PAGINATION ── */
+.pager{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 20px;border-top:1px solid var(--border);font-size:.76rem;color:var(--txt3);
+}
+.pager-btns{display:flex;gap:6px}
+.pbtn{
+  padding:5px 13px;background:var(--glass);border:1px solid var(--border);
+  color:var(--txt2);border-radius:7px;cursor:pointer;font-size:.76rem;
+  transition:all .15s;font-family:'Inter',sans-serif;
+}
+.pbtn:hover:not(:disabled){background:var(--glass3);color:var(--em);border-color:var(--border-em)}
+.pbtn:disabled{opacity:.3;cursor:default}
+
+/* ── LOADING / EMPTY ── */
+.loading,.empty{text-align:center;padding:38px;color:var(--txt3);font-size:.84rem}
+.loading-dot{
+  display:inline-block;width:18px;height:18px;border:2px solid var(--border);
+  border-top-color:var(--em);border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:10px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:22px;right:22px;padding:12px 18px;border-radius:10px;
+  font-size:.83rem;font-weight:500;color:#fff;background:var(--bg3);
+  border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(10px);transition:all .28s;
+  pointer-events:none;z-index:9999;max-width:310px;display:flex;align-items:center;gap:8px;
+}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.ok{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.15)}
+#toast.err{border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.15)}
+
+/* ── ATM KEYBOARD ── */
+.atm-container{
+  background:var(--glass);border:1px solid var(--border);border-radius:var(--r2);
+  padding:26px;margin-bottom:20px;
+}
+.atm-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:22px;
+  font-size:.88rem;font-weight:700;color:var(--txt);
+}
+.atm-header svg{width:17px;height:17px;color:var(--gold);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.atm-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:24px;align-items:start}
+.atm-left{display:flex;flex-direction:column;gap:14px}
+.atm-screen{
+  background:#010a04;border:2px solid #0f3a1a;border-radius:12px;
+  padding:18px 20px;font-family:'JetBrains Mono',monospace;
+  position:relative;overflow:hidden;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.8),0 0 20px rgba(16,185,129,.08);
+}
+.atm-screen::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,70,.018) 2px,rgba(0,255,70,.018) 4px);
+  pointer-events:none;
+}
+.atm-screen-label{font-size:.6rem;color:#1a5c2a;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.atm-amount-row{display:flex;align-items:baseline;gap:4px}
+.atm-amount{
+  font-size:2rem;font-weight:700;color:#00ff41;
+  text-shadow:0 0 10px rgba(0,255,65,.6),0 0 20px rgba(0,255,65,.3);
+  letter-spacing:.04em;line-height:1;
+}
+.atm-cursor{
+  display:inline-block;width:2px;height:1.6rem;background:#00ff41;
+  animation:blink .8s step-end infinite;vertical-align:middle;
+}
+@keyframes blink{50%{opacity:0}}
+.atm-currency{font-size:.72rem;color:#009922;margin-top:5px;opacity:.8}
+.atm-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.atm-key{
+  padding:13px 6px;
+  background:linear-gradient(180deg,#192819,#0e1e0e);
+  border:1px solid #1c381c;border-bottom:3px solid #0a1509;
+  border-radius:9px;color:#00cc33;font-family:'JetBrains Mono',monospace;
+  font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .1s;
+  text-align:center;user-select:none;box-shadow:0 3px 0 #060d06;
+}
+.atm-key:hover{background:linear-gradient(180deg,#1e321e,#122012);color:#00ff41;box-shadow:0 3px 0 #060d06,0 0 8px rgba(0,255,65,.12)}
+.atm-key:active{transform:translateY(2px);box-shadow:0 1px 0 #060d06;border-bottom-width:1px}
+.atm-key.key-del{color:#f59e0b;font-size:.9rem}
+.atm-key.key-clr{color:#f43f5e;font-size:.78rem;letter-spacing:-.02em}
+.atm-key.key-zero{grid-column:span 2}
+.atm-right{display:flex;flex-direction:column;gap:14px}
+.atm-field-label{font-size:.67rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.bank-chip{
+  padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--glass);
+  cursor:pointer;font-size:.68rem;font-weight:700;text-align:center;transition:all .18s;
+  line-height:1.35;
+}
+.bank-chip:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.bank-chip.selected{border-width:2px}
+.bk-aw{color:#e03000}.bk-aw.selected{background:rgba(224,48,0,.1);border-color:#e03000}
+.bk-ci{color:#0066cc}.bk-ci.selected{background:rgba(0,102,204,.1);border-color:#0066cc}
+.bk-bp{color:#009900}.bk-bp.selected{background:rgba(0,153,0,.1);border-color:#009900}
+.bk-bm{color:#cc0000}.bk-bm.selected{background:rgba(204,0,0,.1);border-color:#cc0000}
+.bk-bc{color:#003399}.bk-bc.selected{background:rgba(0,51,153,.1);border-color:#003399}
+.bk-sg{color:#e60028}.bk-sg.selected{background:rgba(230,0,40,.1);border-color:#e60028}
+.bk-ca{color:#006600}.bk-ca.selected{background:rgba(0,102,0,.1);border-color:#006600}
+.bk-vt{color:#7c3aed}.bk-vt.selected{background:rgba(124,58,237,.1);border-color:#7c3aed}
+.bk-pp{color:#009cde}.bk-pp.selected{background:rgba(0,48,135,.12);border-color:#009cde;box-shadow:0 0 0 2px rgba(0,156,222,.25)}
+.paypal-panel{background:rgba(0,48,135,.08);border:1px solid rgba(0,156,222,.3);border-radius:10px;padding:13px 15px}
+.paypal-panel-title{font-size:.68rem;font-weight:700;color:#009cde;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}
+.paypal-email-box{display:flex;align-items:center;gap:10px;background:rgba(0,48,135,.15);border-radius:7px;padding:9px 12px;margin-bottom:10px}
+.paypal-email-box svg{width:20px;height:20px;flex-shrink:0;color:#009cde}
+.paypal-email-val{font-size:.88rem;font-weight:700;color:#009cde;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+.paypal-hint{font-size:.67rem;color:var(--txt3);margin-top:3px}
+.atm-donateur-display{padding:9px 13px;background:var(--glass);border:1px solid var(--border);border-radius:9px;font-size:.855rem;color:var(--txt);display:flex;align-items:center;gap:9px}
+.atm-donateur-display .av-sm{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.atm-select{
+  width:100%;padding:9px 13px;background:var(--glass);border:1px solid var(--border);
+  border-radius:9px;font-size:.855rem;color:var(--txt);outline:none;
+  cursor:pointer;font-family:'Inter',sans-serif;
+}
+.atm-select:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(16,185,129,.08)}
+.atm-select option{background:var(--bg2)}
+.atm-commentaire{
+  width:100%;padding:9px 13px;background:var(--glass);border:1px solid var(--border);
+  border-radius:9px;font-size:.855rem;color:var(--txt);outline:none;
+  font-family:'Inter',sans-serif;resize:none;height:62px;
+}
+.atm-commentaire:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(16,185,129,.08)}
+.atm-commentaire::placeholder{color:var(--txt3)}
+.btn-confirm{
+  width:100%;padding:13px;background:#2563EB;
+  color:#fff;border:none;border-radius:10px;font-size:.92rem;font-weight:700;
+  cursor:pointer;position:relative;overflow:hidden;transition:all .2s;
+  font-family:'Inter',sans-serif;box-shadow:0 4px 18px rgba(37,99,235,.35);
+}
+.btn-confirm:hover{transform:translateY(-2px);background:#1d4ed8;box-shadow:0 8px 28px rgba(37,99,235,.45)}
+.btn-confirm:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.atm-prog-wrap{height:4px;background:var(--glass2);border-radius:2px;overflow:hidden;display:none;margin-top:4px}
+.atm-prog-fill{
+  height:100%;background:linear-gradient(90deg,var(--em3),var(--em),var(--gold));
+  border-radius:2px;width:0;transition:width 1.4s ease;box-shadow:0 0 8px var(--em-glow);
+}
+
+/* ── PROJETS GRID ── */
+.proj-section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;gap:16px;flex-wrap:wrap;
+}
+.proj-section-intro{display:flex;align-items:center;gap:14px}
+.proj-section-icon-wrap{
+  width:52px;height:52px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,#059669,#10b981);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(16,185,129,.35);
+}
+.proj-section-icon-wrap svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.proj-section-title-text{font-family:'Poppins',sans-serif;font-size:1.25rem;font-weight:800;color:var(--txt);margin-bottom:3px}
+.proj-section-subtitle{font-size:.78rem;color:var(--txt3)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.proj-card{
+  border-radius:18px;overflow:hidden;cursor:pointer;
+  background:var(--bg2);border:1px solid var(--border);
+  transition:transform .22s cubic-bezier(.34,1.1,.64,1),box-shadow .22s;
+  position:relative;
+}
+.proj-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.06)}
+.proj-card-banner{
+  height:130px;display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:space-between;
+  padding:14px 16px;position:relative;overflow:hidden;
+}
+.proj-card-banner::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.35));
+}
+.proj-card-icon{
+  width:54px;height:54px;border-radius:14px;
+  background:rgba(255,255,255,.18);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.25);z-index:1;position:relative;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.proj-card-icon svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.proj-card-top-row{display:flex;align-items:center;justify-content:space-between;width:100%;z-index:1;position:relative}
+.proj-card-status{font-size:.66rem;padding:3px 10px;border-radius:20px;font-weight:700;border:none;backdrop-filter:blur(8px)}
+.proj-card-actions{display:flex;gap:5px}
+.proj-btn-edit,.proj-btn-del{
+  width:27px;height:27px;border:none;border-radius:7px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);
+  transition:all .15s;
+}
+.proj-btn-edit{background:rgba(59,130,246,.3);color:#93c5fd}
+.proj-btn-edit:hover{background:rgba(59,130,246,.55)}
+.proj-btn-del{background:rgba(244,63,94,.3);color:#fda4af}
+.proj-btn-del:hover{background:rgba(244,63,94,.55)}
+.proj-btn-edit svg,.proj-btn-del svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.proj-card-body{padding:16px 18px 14px}
+.proj-card-title{font-size:.97rem;font-weight:700;color:var(--txt);margin-bottom:6px;font-family:'Poppins',sans-serif;line-height:1.3}
+.proj-card-desc{font-size:.77rem;color:var(--txt3);line-height:1.55;margin-bottom:14px;min-height:36px}
+.proj-card-prog-section{margin-bottom:12px}
+.proj-card-prog-labels{display:flex;align-items:baseline;gap:6px;margin-bottom:7px}
+.proj-prog-bar-wrap{height:6px;background:rgba(0,0,0,.08);border-radius:4px;overflow:hidden;margin-bottom:5px}
+.proj-prog-bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(0,0,0,.3)}
+.proj-card-prog-pct{font-size:.7rem;color:var(--txt3);text-align:right;font-weight:600}
+.proj-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(0,0,0,.08)}
+.proj-card-dates{font-size:.69rem;color:var(--txt3);display:flex;align-items:center;gap:5px}
+.proj-card-dates svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.proj-card-id{font-size:.66rem;color:var(--txt3);font-family:'JetBrains Mono',monospace}
+/* ── PROJET FICHE MODALE ── */
+.pv-banner{padding:28px 24px 22px;position:relative;border-radius:var(--r2) var(--r2) 0 0;display:flex;align-items:center;gap:18px}
+.pv-icon-wrap{width:68px;height:68px;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+.pv-icon-wrap svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pv-banner-info{flex:1}
+.pv-title{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.pv-status-badge{backdrop-filter:blur(8px);background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.pv-prog-section{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.pv-prog-labels{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.pv-prog-collected{font-size:1.3rem;font-weight:800;font-family:'Poppins',sans-serif}
+.pv-prog-pct{font-size:.9rem;font-weight:700;color:var(--txt2)}
+.pv-prog-bar{height:10px;background:rgba(0,0,0,.08);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.pv-prog-fill{height:100%;border-radius:6px;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.pv-prog-goal{font-size:.75rem;color:var(--txt3)}
+.pv-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.pv-stat{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.pv-stat-label{font-size:.65rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.pv-stat-val{font-size:.95rem;font-weight:700;color:var(--txt)}
+.pv-stat-remaining{color:#f59e0b}
+.pv-why-section{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.pv-why-header{display:flex;align-items:center;gap:7px;font-size:.75rem;font-weight:700;color:var(--em);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.pv-why-header svg{flex-shrink:0}
+.pv-why-text{font-size:.875rem;color:var(--txt2);line-height:1.65}
+.pv-dates-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pv-date-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.pv-date-item svg{width:18px;height:18px;flex-shrink:0;color:var(--txt3)}
+.pv-date-label{font-size:.65rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.pv-date-val{font-size:.875rem;font-weight:600;color:var(--txt)}
+
+/* ── BÉNÉFICIAIRE FICHE ── */
+.benef-card-banner{padding:28px 24px 24px;border-radius:var(--r2) var(--r2) 0 0;position:relative;display:flex;align-items:center;gap:18px}
+.bc-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--txt);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:.9rem}
+.bc-close:hover{background:rgba(244,63,94,.2);color:#fb7185}
+.benef-card-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.3);border:3px solid rgba(255,255,255,.2)}
+.benef-card-name{font-size:1.18rem;font-weight:700;color:var(--txt);margin-bottom:3px}
+.benef-card-sub{font-size:.82rem;color:var(--txt2)}
+.benef-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.benef-info-item{background:var(--glass);border:1px solid var(--border);border-radius:9px;padding:11px 14px}
+.benef-info-label{font-size:.65rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.benef-info-val{font-size:.9rem;color:var(--txt);font-weight:500}
+.benef-need-section{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.benef-need-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.benef-need-title{font-size:.7rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em}
+.benef-need-badge{font-size:.7rem;font-weight:600;padding:3px 11px;border-radius:20px}
+.benef-need-body{display:flex;align-items:flex-start;gap:16px}
+.benef-need-illus{width:64px;height:64px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08)}
+.benef-need-illus svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.benef-need-text{font-size:.875rem;color:var(--txt2);line-height:1.6;flex:1}
+.tr-clickable{cursor:pointer;transition:background .15s}
+.tr-clickable:hover td{background:rgba(16,185,129,.05)}
+
+/* ── CONFETTI ── */
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:9000;overflow:hidden}
+.cf{position:absolute;width:9px;height:9px;top:-10px;animation:cf-fall linear forwards}
+@keyframes cf-fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--txt3)}
+
+/* ── ADMIN SECTION BUTTON ── */
+.btn-add-sec{
+  display:none;align-items:center;gap:6px;padding:7px 14px;
+  background:linear-gradient(135deg,var(--em2),var(--em));color:#fff;
+  border:none;border-radius:8px;font-size:.78rem;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;
+  box-shadow:0 3px 12px rgba(16,185,129,.25);
+}
+.btn-add-sec:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(16,185,129,.4)}
+.btn-add-sec svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.admin-show{display:flex !important}
+.atm-admin-wrap{display:none}
+.atm-admin-wrap.admin-show{display:block}
+.atm-admin-wrap.donateur-show{display:block}
+
+/* ── CONFIRM DIALOG ── */
+.confirm-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  z-index:600;display:none;align-items:center;justify-content:center;
+}
+.confirm-overlay.open{display:flex}
+.confirm-box{
+  background:var(--bg2);border:1px solid rgba(244,63,94,.35);border-radius:var(--r);
+  padding:28px 30px;max-width:360px;width:90%;text-align:center;
+  animation:modal-in .2s ease;
+}
+.confirm-box h4{font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:10px}
+.confirm-box p{font-size:.84rem;color:var(--txt2);line-height:1.6;margin-bottom:22px}
+.confirm-btns{display:flex;gap:10px;justify-content:center}
+.btn-no{
+  padding:9px 20px;background:var(--glass);color:var(--txt2);
+  border:1px solid var(--border);border-radius:8px;font-size:.855rem;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;
+}
+.btn-no:hover{background:var(--glass2)}
+.btn-yes{
+  padding:9px 20px;background:rgba(244,63,94,.2);color:#fb7185;
+  border:1px solid rgba(244,63,94,.3);border-radius:8px;font-size:.855rem;
+  font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;
+}
+.btn-yes:hover{background:rgba(244,63,94,.35);color:#fff}
+</style>
+</head>
+<body>
+<div id="confetti-container"></div>
+
+<!-- ════════════════════ LOGIN ════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <h1>CharityApp</h1>
+      <p>Plateforme de gestion humanitaire</p>
+    </div>
+    <div class="form-group">
+      <label>
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Adresse email
+      </label>
+      <input type="email" id="inp-email" placeholder="admin@charity.ma" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label>
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Mot de passe
+      </label>
+      <input type="password" id="inp-pwd" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" id="btn-login" onclick="login(event)">Se connecter</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint">
+      <strong>Comptes de démonstration</strong>
+      admin@charity.ma &nbsp;/&nbsp; admin123<br>
+      ahmed@charity.ma &nbsp;/&nbsp; pass123
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ APP ════════════════════ -->
+<div id="app-screen">
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-inner">
+          <div class="sb-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div>
+            <h2>CharityApp</h2>
+            <p>Gestion humanitaire</p>
+          </div>
+        </div>
+      </div>
+      <div class="sb-user">
+        <div class="sb-av-wrap">
+          <div class="sb-av" id="sb-av">?</div>
+          <div class="sb-av-dot"></div>
+        </div>
+        <div class="sb-user-info">
+          <p id="sb-name">—</p>
+          <span id="sb-role">—</span>
+        </div>
+      </div>
+      <nav>
+        <div class="nav-label" data-i18n="nav_label">Navigation</div>
+        <div class="nav-item active" onclick="navigate('dashboard')" data-sec="dashboard">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div><span data-i18n="nav_dashboard">Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="navigate('projets')" data-sec="projets">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div><span data-i18n="nav_projets">Projets</span>
+        </div>
+        <div class="nav-item" onclick="navigate('donateurs')" data-sec="donateurs">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div><span data-i18n="nav_donateurs">Donateurs</span>
+        </div>
+        <div class="nav-item" onclick="navigate('beneficiaires')" data-sec="beneficiaires">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div><span data-i18n="nav_beneficiaires">Bénéficiaires</span>
+        </div>
+        <div class="nav-item" onclick="navigate('dons')" data-sec="dons">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div><span data-i18n="nav_dons">Dons</span>
+        </div>
+      </nav>
+      <div class="sb-foot">
+        <button class="btn-lang" id="lang-btn" onclick="toggleLang()">🇲🇦 AR</button>
+        <button class="btn-logout" onclick="logout()" data-i18n="logout">Déconnexion</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <h3 id="page-title">Dashboard</h3>
+        <button class="btn-refresh" onclick="refreshCurrent()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Actualiser
+        </button>
+      </div>
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="sec-dashboard">
+          <div class="stats">
+            <div class="stat stat-s1">
+              <div class="stat-head">
+                <div class="stat-ic ic-g">
+                  <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span class="stat-trend">Actifs</span>
+              </div>
+              <div class="stat-v" id="st-projets">—</div>
+              <div class="stat-l">Projets</div>
+            </div>
+            <div class="stat stat-s2">
+              <div class="stat-head">
+                <div class="stat-ic ic-b">
+                  <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span class="stat-trend" style="background:rgba(59,130,246,.1);color:var(--blue)">Total</span>
+              </div>
+              <div class="stat-v" id="st-donateurs">—</div>
+              <div class="stat-l">Donateurs</div>
+            </div>
+            <div class="stat stat-s3">
+              <div class="stat-head">
+                <div class="stat-ic ic-a">
+                  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span class="stat-trend" style="background:rgba(245,158,11,.1);color:var(--gold)">Aidés</span>
+              </div>
+              <div class="stat-v" id="st-benef">—</div>
+              <div class="stat-l">Bénéficiaires</div>
+            </div>
+            <div class="stat stat-s4">
+              <div class="stat-head">
+                <div class="stat-ic ic-r">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <span class="stat-trend" style="background:rgba(244,63,94,.1);color:var(--rose)">MAD</span>
+              </div>
+              <div class="stat-v" id="st-montant">—</div>
+              <div class="stat-l">Total collecté</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h">
+              <h4>
+                <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Projets en cours
+              </h4>
+              <span class="badge-count" id="cnt-proj-d">—</span>
+            </div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Nom</th><th>Statut</th><th>Objectif</th><th>Collecté</th><th>Progression</th><th>Période</th></tr></thead>
+              <tbody id="tb-proj-d"><tr><td colspan="6" class="loading"><span class="loading-dot"></span>Chargement…</td></tr></tbody>
+            </table></div>
+          </div>
+          <div class="card">
+            <div class="card-h">
+              <h4>
+                <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Dons récents
+              </h4>
+              <span class="badge-count" id="cnt-don-d">—</span>
+            </div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>#</th><th>Donateur</th><th>Projet</th><th>Montant</th><th>Mode</th><th>Date</th></tr></thead>
+              <tbody id="tb-don-d"><tr><td colspan="6" class="loading"><span class="loading-dot"></span>Chargement…</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- PROJETS -->
+        <div class="section" id="sec-projets">
+          <div class="proj-section-header">
+            <div class="proj-section-intro">
+              <div class="proj-section-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="proj-section-title-text">Projets de charité</div>
+                <div class="proj-section-subtitle">Cliquez sur un projet pour voir sa situation et pourquoi le soutenir</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="badge-count" id="cnt-proj">—</span>
+              <button class="btn-add-sec" id="btn-add-proj" onclick="openAddProjet()">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouveau projet
+              </button>
+            </div>
+          </div>
+          <div class="proj-grid" id="proj-grid">
+            <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--txt3)"><span class="loading-dot"></span> Chargement…</div>
+          </div>
+        </div>
+
+        <!-- DONATEURS -->
+        <div class="section" id="sec-donateurs">
+          <div class="card">
+            <div class="card-h">
+              <h4><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Donateurs</h4>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="badge-count" id="cnt-don-list">—</span>
+                <button class="btn-add-sec" id="btn-add-donateur" onclick="openAddDonateur()">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouveau donateur
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Type</th><th>Description</th><th>Actions</th></tr></thead>
+              <tbody id="tb-don-list"><tr><td colspan="7" class="loading"><span class="loading-dot"></span>Chargement…</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- BÉNÉFICIAIRES -->
+        <div class="section" id="sec-beneficiaires">
+          <div class="card">
+            <div class="card-h">
+              <h4><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Bénéficiaires</h4>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="badge-count" id="cnt-benef">—</span>
+                <button class="btn-add-sec" id="btn-add-benef" onclick="openAddBenef()">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouveau bénéficiaire
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Situation</th><th>Enfants</th><th>Besoins</th><th>Actions</th></tr></thead>
+              <tbody id="tb-benef"><tr><td colspan="7" class="loading"><span class="loading-dot"></span>Chargement…</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- DONS — CLAVIER ATM -->
+        <div class="section" id="sec-dons">
+          <div class="atm-admin-wrap" id="atm-admin-wrap">
+          <div class="atm-container">
+            <div class="atm-header">
+              <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Terminal de don — Clavier bancaire
+            </div>
+            <div class="atm-layout">
+              <div class="atm-left">
+                <div class="atm-screen">
+                  <div class="atm-screen-label">Montant du don</div>
+                  <div class="atm-amount-row">
+                    <div class="atm-amount" id="atm-display">0</div>
+                    <span class="atm-cursor"></span>
+                  </div>
+                  <div class="atm-currency">MAD — Dirham Marocain</div>
+                </div>
+                <div class="atm-keypad">
+                  <button class="atm-key" onclick="atmKey('1')">1</button>
+                  <button class="atm-key" onclick="atmKey('2')">2</button>
+                  <button class="atm-key" onclick="atmKey('3')">3</button>
+                  <button class="atm-key" onclick="atmKey('4')">4</button>
+                  <button class="atm-key" onclick="atmKey('5')">5</button>
+                  <button class="atm-key" onclick="atmKey('6')">6</button>
+                  <button class="atm-key" onclick="atmKey('7')">7</button>
+                  <button class="atm-key" onclick="atmKey('8')">8</button>
+                  <button class="atm-key" onclick="atmKey('9')">9</button>
+                  <button class="atm-key key-zero" onclick="atmKey('0')">0</button>
+                  <button class="atm-key key-del" onclick="atmDel()">⌫</button>
+                  <button class="atm-key key-clr" style="grid-column:1/-1" onclick="atmClear()">EFFACER</button>
+                </div>
+              </div>
+              <div class="atm-right">
+                <div>
+                  <div class="atm-field-label">Banque / Mode de paiement</div>
+                  <div class="bank-grid" id="bank-grid">
+                    <div class="bank-chip bk-aw" onclick="selectBank(this,'Attijariwafa Bank')">Attijariwafa<br>Bank</div>
+                    <div class="bank-chip bk-ci" onclick="selectBank(this,'CIH Bank')">CIH<br>Bank</div>
+                    <div class="bank-chip bk-bp" onclick="selectBank(this,'Banque Populaire')">Banque<br>Populaire</div>
+                    <div class="bank-chip bk-bm" onclick="selectBank(this,'BMCE Bank')">BMCE<br>Bank</div>
+                    <div class="bank-chip bk-bc" onclick="selectBank(this,'BMCI')">BMCI</div>
+                    <div class="bank-chip bk-sg" onclick="selectBank(this,'Société Générale')">Société<br>Générale</div>
+                    <div class="bank-chip bk-ca" onclick="selectBank(this,'Crédit Agricole')">Crédit<br>Agricole</div>
+                    <div class="bank-chip bk-vt" onclick="selectBank(this,'Virement')">Virement<br>bancaire</div>
+                    <div class="bank-chip bk-pp" onclick="selectBank(this,'PayPal')">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:block;margin:0 auto 2px"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.26-.982 5.05-4.348 6.797-8.647 6.797H9.928c-.524 0-.968.382-1.05.9l-1.12 7.106-.312 1.978h2.467l.998-6.323c.082-.518.526-.9 1.05-.9h2.19c4.299 0 7.665-1.747 8.647-6.797.399-2.052.065-3.687-.576-4.48z"/></svg>
+                      PayPal
+                    </div>
+                  </div>
+                </div>
+                <div id="atm-donateur-row">
+                  <div class="atm-field-label">Donateur</div>
+                  <select class="atm-select" id="atm-donateur"></select>
+                  <div id="atm-donateur-display" class="atm-donateur-display" style="display:none">
+                    <div class="av-sm" id="atm-don-av" style="background:#059669">?</div>
+                    <span id="atm-don-name">—</span>
+                  </div>
+                </div>
+                <div id="paypal-panel" style="display:none">
+                  <div class="paypal-panel">
+                    <div class="paypal-panel-title">Paiement PayPal</div>
+                    <div class="paypal-email-box">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                      <div>
+                        <div class="paypal-email-val">charity@paypal.com</div>
+                        <div class="paypal-hint">Envoyez votre don à cet email PayPal</div>
+                      </div>
+                    </div>
+                    <div class="atm-field-label">Référence de transaction PayPal *</div>
+                    <input type="text" class="atm-select" id="paypal-ref" placeholder="Ex: 4XC12345AB678901C" style="font-family:'JetBrains Mono',monospace;letter-spacing:.03em;margin-bottom:6px">
+                    <div class="paypal-hint">Copiez l'ID de transaction depuis votre email de confirmation PayPal</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="atm-field-label">Projet</div>
+                  <select class="atm-select" id="atm-projet"></select>
+                </div>
+                <div>
+                  <div class="atm-field-label">Commentaire (optionnel)</div>
+                  <textarea class="atm-commentaire" id="atm-comment" placeholder="Remarque sur ce don…"></textarea>
+                </div>
+                <div class="atm-prog-wrap" id="atm-prog-wrap">
+                  <div class="atm-prog-fill" id="atm-prog-fill"></div>
+                </div>
+                <button class="btn-confirm" id="btn-confirm-don" onclick="confirmerDon()">
+                  ✦ Confirmer le don
+                </button>
+              </div>
+            </div>
+          </div>
+          </div><!-- /atm-admin-wrap -->
+          <div class="card">
+            <div class="card-h">
+              <h4><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Historique des dons</h4>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="badge-count" id="cnt-dons">—</span>
+                <button class="btn-add-sec" id="btn-add-don" onclick="openAddDon()">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nouveau don
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>#</th><th>Donateur</th><th>Projet</th><th>Montant</th><th>Mode</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="tb-dons"><tr><td colspan="8" class="loading"><span class="loading-dot"></span>Chargement…</td></tr></tbody>
+            </table></div>
+            <div class="pager">
+              <span id="pager-info">—</span>
+              <div class="pager-btns">
+                <button class="pbtn" id="btn-prev" onclick="changePage(-1)" disabled>← Précédent</button>
+                <button class="pbtn" id="btn-next" onclick="changePage(1)">Suivant →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openAddModal()">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- ════════ MODAL PROJET ════════ -->
+<div class="modal-overlay" id="modal-projet">
+  <div class="modal modal-lg">
+    <div class="modal-h">
+      <h3><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span id="modal-projet-title">Nouveau projet</span></h3>
+      <button class="btn-close" onclick="closeModal('modal-projet')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="proj-id"/>
+      <div class="modal-grid">
+        <div class="field modal-full">
+          <label>Nom du projet *</label>
+          <input type="text" id="proj-nom" placeholder="Ex: Aide Ramadan 2026"/>
+        </div>
+        <div class="field modal-full">
+          <label>Description</label>
+          <textarea id="proj-desc" placeholder="Décrivez l'objectif de ce projet…"></textarea>
+        </div>
+        <div class="field">
+          <label>Objectif (MAD) *</label>
+          <input type="number" id="proj-objectif" placeholder="50000" min="0" step="100"/>
+        </div>
+        <div class="field">
+          <label>Statut *</label>
+          <select id="proj-statut">
+            <option value="EN_ATTENTE">En attente</option>
+            <option value="EN_COURS">En cours</option>
+            <option value="TERMINE">Terminé</option>
+            <option value="ANNULE">Annulé</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Date début</label>
+          <input type="date" id="proj-debut"/>
+        </div>
+        <div class="field">
+          <label>Date fin</label>
+          <input type="date" id="proj-fin"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-projet')">Annuler</button>
+      <button class="btn-submit" id="btn-save-projet" onclick="saveProjet()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL DONATEUR ════════ -->
+<div class="modal-overlay" id="modal-donateur">
+  <div class="modal modal-lg">
+    <div class="modal-h">
+      <h3><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span id="modal-don-title">Nouveau donateur</span></h3>
+      <button class="btn-close" onclick="closeModal('modal-donateur')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="don-id"/>
+      <input type="hidden" id="don-util-id"/>
+      <div class="modal-grid">
+        <div class="field">
+          <label>Prénom *</label>
+          <input type="text" id="don-prenom" placeholder="Ahmed"/>
+        </div>
+        <div class="field">
+          <label>Nom *</label>
+          <input type="text" id="don-nom" placeholder="Benali"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="don-email" placeholder="ahmed@example.ma"/>
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <input type="tel" id="don-tel" placeholder="+212 6XX XXX XXX"/>
+        </div>
+        <div class="field" id="don-pwd-wrap">
+          <label>Mot de passe *</label>
+          <input type="password" id="don-pwd" placeholder="••••••••"/>
+        </div>
+        <div class="field">
+          <label>Type organisation *</label>
+          <select id="don-type">
+            <option value="Particulier">Particulier</option>
+            <option value="Entreprise">Entreprise</option>
+            <option value="Association">Association</option>
+            <option value="ONG">ONG</option>
+          </select>
+        </div>
+        <div class="field modal-full">
+          <label>Adresse</label>
+          <input type="text" id="don-adresse" placeholder="Ville, Maroc"/>
+        </div>
+        <div class="field modal-full">
+          <label>Description</label>
+          <textarea id="don-desc" placeholder="Présentation du donateur…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-donateur')">Annuler</button>
+      <button class="btn-submit" id="btn-save-don" onclick="saveDonateur()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL BÉNÉFICIAIRE ════════ -->
+<div class="modal-overlay" id="modal-benef">
+  <div class="modal modal-lg">
+    <div class="modal-h">
+      <h3><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span id="modal-benef-title">Nouveau bénéficiaire</span></h3>
+      <button class="btn-close" onclick="closeModal('modal-benef')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="benef-id"/>
+      <input type="hidden" id="benef-util-id"/>
+      <div class="modal-grid">
+        <div class="field">
+          <label>Prénom *</label>
+          <input type="text" id="benef-prenom" placeholder="Khadija"/>
+        </div>
+        <div class="field">
+          <label>Nom *</label>
+          <input type="text" id="benef-nom" placeholder="Mansouri"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="benef-email" placeholder="khadija@example.ma"/>
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <input type="tel" id="benef-tel" placeholder="+212 6XX XXX XXX"/>
+        </div>
+        <div class="field" id="benef-pwd-wrap">
+          <label>Mot de passe *</label>
+          <input type="password" id="benef-pwd" placeholder="••••••••"/>
+        </div>
+        <div class="field">
+          <label>Situation familiale</label>
+          <select id="benef-situation">
+            <option value="">— Choisir —</option>
+            <option value="Célibataire">Célibataire</option>
+            <option value="Marié(e)">Marié(e)</option>
+            <option value="Veuf(ve)">Veuf(ve)</option>
+            <option value="Divorcé(e)">Divorcé(e)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Nombre d'enfants</label>
+          <input type="number" id="benef-enfants" placeholder="0" min="0"/>
+        </div>
+        <div class="field modal-full">
+          <label>Adresse</label>
+          <input type="text" id="benef-adresse" placeholder="Ville, Maroc"/>
+        </div>
+        <div class="field modal-full">
+          <label>Besoins identifiés</label>
+          <textarea id="benef-besoins" placeholder="Aide alimentaire, soin médicaux…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-benef')">Annuler</button>
+      <button class="btn-submit" id="btn-save-benef" onclick="saveBeneficiaire()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL DON ════════ -->
+<div class="modal-overlay" id="modal-don">
+  <div class="modal">
+    <div class="modal-h">
+      <h3><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Nouveau don</h3>
+      <button class="btn-close" onclick="closeModal('modal-don')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="field modal-full">
+          <label>Donateur *</label>
+          <select id="don-modal-donateur"></select>
+        </div>
+        <div class="field modal-full">
+          <label>Projet *</label>
+          <select id="don-modal-projet"></select>
+        </div>
+        <div class="field">
+          <label>Montant (MAD) *</label>
+          <input type="number" id="don-modal-montant" placeholder="5000" min="1" step="100"/>
+        </div>
+        <div class="field">
+          <label>Mode de paiement *</label>
+          <select id="don-modal-mode">
+            <option value="Virement">Virement bancaire</option>
+            <option value="Chèque">Chèque</option>
+            <option value="Espèces">Espèces</option>
+            <option value="Attijariwafa Bank">Attijariwafa Bank</option>
+            <option value="CIH Bank">CIH Bank</option>
+            <option value="Banque Populaire">Banque Populaire</option>
+            <option value="BMCE Bank">BMCE Bank</option>
+            <option value="BMCI">BMCI</option>
+            <option value="Société Générale">Société Générale</option>
+            <option value="Crédit Agricole">Crédit Agricole</option>
+          </select>
+        </div>
+        <div class="field modal-full">
+          <label>Commentaire</label>
+          <textarea id="don-modal-comment" placeholder="Remarque sur ce don…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-don')">Annuler</button>
+      <button class="btn-submit" id="btn-save-don-modal" onclick="saveDon()">Enregistrer le don</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL PROJET FICHE ════════ -->
+<div class="modal-overlay" id="modal-proj-card">
+  <div class="modal modal-lg">
+    <div class="pv-banner" id="pv-banner">
+      <button class="bc-close" onclick="closeModal('modal-proj-card')">✕</button>
+      <div class="pv-icon-wrap" id="pv-icon"></div>
+      <div class="pv-banner-info">
+        <div class="pv-title" id="pv-title">—</div>
+        <span class="pv-status-badge badge" id="pv-status">—</span>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="pv-prog-section">
+        <div class="pv-prog-labels">
+          <span class="pv-prog-collected" id="pv-collected">0 MAD</span>
+          <span class="pv-prog-pct" id="pv-pct">0%</span>
+        </div>
+        <div class="pv-prog-bar"><div class="pv-prog-fill" id="pv-prog-fill" style="width:0%"></div></div>
+        <div class="pv-prog-goal">Objectif : <span id="pv-goal">—</span></div>
+      </div>
+      <div class="pv-stats-row">
+        <div class="pv-stat">
+          <div class="pv-stat-label">Collecté</div>
+          <div class="pv-stat-val" id="pv-s-collected">—</div>
+        </div>
+        <div class="pv-stat">
+          <div class="pv-stat-label">Objectif</div>
+          <div class="pv-stat-val" id="pv-s-goal">—</div>
+        </div>
+        <div class="pv-stat">
+          <div class="pv-stat-label">Restant</div>
+          <div class="pv-stat-val pv-stat-remaining" id="pv-remaining">—</div>
+        </div>
+      </div>
+      <div class="pv-why-section">
+        <div class="pv-why-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Situation &amp; Pourquoi soutenir ce projet
+        </div>
+        <div class="pv-why-text" id="pv-desc">—</div>
+      </div>
+      <div class="pv-dates-row">
+        <div class="pv-date-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div><div class="pv-date-label">Début</div><div class="pv-date-val" id="pv-debut">—</div></div>
+        </div>
+        <div class="pv-date-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div><div class="pv-date-label">Fin prévue</div><div class="pv-date-val" id="pv-fin">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL BÉNÉFICIAIRE FICHE ════════ -->
+<div class="modal-overlay" id="modal-benef-card">
+  <div class="modal modal-lg">
+    <div class="benef-card-banner" id="bc-banner">
+      <button class="bc-close" onclick="closeModal('modal-benef-card')">✕</button>
+      <div class="benef-card-avatar-lg" id="bc-avatar">?</div>
+      <div>
+        <div class="benef-card-name" id="bc-name">—</div>
+        <div class="benef-card-sub" id="bc-email">—</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="benef-info-grid">
+        <div class="benef-info-item">
+          <div class="benef-info-label">Téléphone</div>
+          <div class="benef-info-val" id="bc-tel">—</div>
+        </div>
+        <div class="benef-info-item">
+          <div class="benef-info-label">Adresse</div>
+          <div class="benef-info-val" id="bc-adresse">—</div>
+        </div>
+        <div class="benef-info-item">
+          <div class="benef-info-label">Situation familiale</div>
+          <div class="benef-info-val" id="bc-situation">—</div>
+        </div>
+        <div class="benef-info-item" style="text-align:center">
+          <div class="benef-info-label">Enfants à charge</div>
+          <div class="benef-info-val" id="bc-enfants" style="font-size:1.5rem;font-weight:800;color:var(--em)">—</div>
+        </div>
+      </div>
+      <div class="benef-need-section">
+        <div class="benef-need-header">
+          <div class="benef-need-title">Besoins</div>
+          <span class="benef-need-badge" id="bc-need-badge">—</span>
+        </div>
+        <div class="benef-need-body">
+          <div class="benef-need-illus" id="bc-need-illus"></div>
+          <div class="benef-need-text" id="bc-need-text">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CONFIRM DELETE ════════ -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h4>Confirmer la suppression</h4>
+    <p id="confirm-msg">Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.</p>
+    <div class="confirm-btns">
+      <button class="btn-no" onclick="closeConfirm()">Annuler</button>
+      <button class="btn-yes" id="btn-yes-del">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════ STATE ════════════════════════════ */
+let JWT = null;
+let currentSection = 'dashboard';
+let donsPage = 0;
+const PAGE = 8;
+const COLORS = ['#059669','#2563eb','#d97706','#e11d48','#7c3aed','#0891b2','#0f766e','#be185d'];
+let atmValue = '0';
+let selectedBank = null;
+let userRole = null;
+let currentUserEmail = null;
+let currentDonateurId = null;
+
+/* ════════════════════════════ LANGUE ════════════════════════════ */
+let currentLang = localStorage.getItem('lang') || 'fr';
+
+const I18N = {
+  fr: {
+    nav_label:'Navigation', nav_dashboard:'Dashboard', nav_projets:'Projets',
+    nav_donateurs:'Donateurs', nav_beneficiaires:'Bénéficiaires', nav_dons:'Dons',
+    logout:'Déconnexion',
+  },
+  ar: {
+    nav_label:'التنقل', nav_dashboard:'لوحة التحكم', nav_projets:'المشاريع',
+    nav_donateurs:'المتبرعون', nav_beneficiaires:'المستفيدون', nav_dons:'التبرعات',
+    logout:'تسجيل الخروج',
+  }
+};
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  const html = document.documentElement;
+  html.lang = lang;
+  html.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+  const t = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (t[k]) el.textContent = t[k];
+  });
+  const label = lang === 'ar' ? '🇫🇷 FR' : '🇲🇦 AR';
+  const btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = label;
+}
+
+function toggleLang() { applyLang(currentLang === 'fr' ? 'ar' : 'fr'); }
+
+applyLang(currentLang);
+
+/* ════════════════════════════ AUTH ════════════════════════════ */
+async function login(e) {
+  const btn = document.getElementById('btn-login');
+  addRipple(btn, e);
+  const email = document.getElementById('inp-email').value.trim();
+  const pwd   = document.getElementById('inp-pwd').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!email || !pwd) { showLoginErr('Veuillez remplir tous les champs.'); return; }
+  btn.disabled = true; btn.textContent = 'Connexion…';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, motDePasse: pwd })
+    });
+    if (!res.ok) {
+      showLoginErr(res.status === 401 ? 'Email ou mot de passe incorrect.' : `Erreur ${res.status}`);
+      return;
+    }
+    const data = await res.json();
+    JWT = data.token;
+    userRole = data.role;
+    currentUserEmail = data.email;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    const initials = data.email ? data.email[0].toUpperCase() : '?';
+    document.getElementById('sb-av').textContent = initials;
+    document.getElementById('sb-name').textContent = data.email;
+    document.getElementById('sb-role').textContent = data.role;
+    updateAdminUI();
+    if (userRole === 'DONATEUR') await loadCurrentDonateur();
+    loadDashboard();
+  } catch(err) {
+    showLoginErr('Impossible de joindre le serveur.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Se connecter';
+  }
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function loadCurrentDonateur() {
+  try {
+    const donateurs = await apiGet('/api/donateurs');
+    const me = donateurs.find(d => d.utilisateur?.email === currentUserEmail);
+    if (me) {
+      currentDonateurId = me.id;
+      const avEl = document.getElementById('atm-don-av');
+      const nmEl = document.getElementById('atm-don-name');
+      if (avEl && nmEl) {
+        avEl.textContent = ((me.utilisateur?.prenom?.[0]??'')+(me.utilisateur?.nom?.[0]??'')).toUpperCase() || '?';
+        avEl.style.background = COLORS[(me.id??0) % COLORS.length];
+        nmEl.textContent = `${me.utilisateur?.prenom??''} ${me.utilisateur?.nom??''}`.trim();
+      }
+    }
+  } catch(e) {}
+}
+
+function logout() {
+  JWT = null;
+  userRole = null;
+  currentUserEmail = null;
+  currentDonateurId = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('inp-pwd').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function isAdmin() { return userRole === 'ADMIN'; }
+
+function updateAdminUI() {
+  const admin = isAdmin();
+  // Boutons "+" dans chaque section
+  ['btn-add-proj','btn-add-donateur','btn-add-benef','btn-add-don'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('admin-show', admin);
+  });
+  // ATM keyboard: uniquement pour le DONATEUR (retiré de l'admin)
+  const atm = document.getElementById('atm-admin-wrap');
+  if (atm) {
+    atm.classList.remove('admin-show');
+    atm.classList.toggle('donateur-show', userRole === 'DONATEUR');
+  }
+  // Pour le donateur : montrer le display (nom fixe), masquer le dropdown
+  const atmSel = document.getElementById('atm-donateur');
+  const atmDisplay = document.getElementById('atm-donateur-display');
+  if (atmSel) atmSel.style.display = admin ? '' : 'none';
+  if (atmDisplay) atmDisplay.style.display = admin ? 'none' : 'flex';
+  // FAB (masqué — remplacé par boutons de section)
+  const fab = document.getElementById('fab');
+  if (fab) fab.style.display = 'none';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') login(e);
+});
+
+/* ════════════════════════════ API ════════════════════════════ */
+async function api(url, method='GET', body=null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json', 'Accept-Language': currentLang } };
+  if (JWT) opts.headers['Authorization'] = 'Bearer ' + JWT;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (res.status === 401) { logout(); throw new Error('Session expirée'); }
+  if (res.status === 204) return null;
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(txt || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+const apiGet  = url        => api(url);
+const apiPost = (url,body) => api(url,'POST',body);
+const apiPut  = (url,body) => api(url,'PUT',body);
+const apiDel  = url        => api(url,'DELETE');
+
+/* ════════════════════════════ NAVIGATION ════════════════════════════ */
+const LABELS = { dashboard:'Dashboard', projets:'Projets', donateurs:'Donateurs', beneficiaires:'Bénéficiaires', dons:'Dons' };
+
+function navigate(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelector(`.nav-item[data-sec="${sec}"]`).classList.add('active');
+  document.getElementById('page-title').textContent = LABELS[sec];
+  currentSection = sec;
+  // FAB remplacé par boutons de section — pas utilisé
+  const fab = document.getElementById('fab');
+  if (fab) fab.style.display = 'none';
+  load(sec);
+}
+
+function refreshCurrent() { load(currentSection); }
+
+function load(sec) {
+  if      (sec === 'dashboard')     loadDashboard();
+  else if (sec === 'projets')       loadProjets();
+  else if (sec === 'donateurs')     loadDonateurs();
+  else if (sec === 'beneficiaires') loadBeneficiaires();
+  else if (sec === 'dons')          loadDons(donsPage);
+}
+
+/* ════════════════════════════ FORMATTERS ════════════════════════════ */
+const N  = n => new Intl.NumberFormat('fr-MA', { minimumFractionDigits:2, maximumFractionDigits:2 }).format(n ?? 0);
+const D  = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('fr-FR') : '—';
+const DT = s => s ? new Date(s).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+const initials = (p,n) => ((p?.[0]??'')+(n?.[0]??'')).toUpperCase() || '?';
+const color = id => COLORS[(id??0) % COLORS.length];
+
+function badge(s) {
+  const m = { EN_COURS:'b-green', TERMINE:'b-blue', ANNULE:'b-rose', EN_ATTENTE:'b-amber' };
+  const l = { EN_COURS:'En cours', TERMINE:'Terminé', ANNULE:'Annulé', EN_ATTENTE:'En attente' };
+  return `<span class="badge ${m[s]??'b-gray'}">${l[s]??s}</span>`;
+}
+
+function prog(c, o) {
+  const p = o > 0 ? Math.min(100, Math.round(c/o*100)) : 0;
+  return `<div class="prog-wrap">
+    <div class="prog-lbl"><span>${N(c)}</span><span>${p}%</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>
+  </div>`;
+}
+
+function av(prenom, nom, id) {
+  return `<div class="av-cell">
+    <div class="av-sm" style="background:${color(id)}">${initials(prenom,nom)}</div>
+    <span class="td-strong">${prenom??''} ${nom??''}</span>
+  </div>`;
+}
+
+function actionBtns(editFn, delFn) {
+  return `<div class="action-btns">
+    <button class="btn-edit" onclick="${editFn}">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </button>
+    <button class="btn-del" onclick="${delFn}">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </button>
+  </div>`;
+}
+
+/* ════════════════════════════ DASHBOARD ════════════════════════════ */
+async function loadDashboard() {
+  try {
+    const [projets, donateurs, benef, dons] = await Promise.all([
+      apiGet('/api/projets'),
+      apiGet('/api/donateurs'),
+      apiGet('/api/beneficiaires'),
+      apiGet('/api/dons?page=0&size=6&sort=dateDon,desc')
+    ]);
+    animateCount('st-projets', projets.length);
+    animateCount('st-donateurs', donateurs.length);
+    animateCount('st-benef', benef.length);
+    const total = (dons.content??[]).reduce((s,d) => s + (d.montant??0), 0);
+    document.getElementById('st-montant').textContent = N(total);
+    document.getElementById('cnt-proj-d').textContent = projets.length + ' projets';
+    document.getElementById('tb-proj-d').innerHTML = projets.length
+      ? projets.map(p => `<tr>
+          <td class="td-strong">${p.nom}</td>
+          <td>${badge(p.statut)}</td>
+          <td>${N(p.objectifMontant)} MAD</td>
+          <td style="color:var(--em);font-weight:600">${N(p.montantCollecte)} MAD</td>
+          <td>${prog(p.montantCollecte, p.objectifMontant)}</td>
+          <td style="font-size:.76rem;color:var(--txt3)">${D(p.dateDebut)} → ${D(p.dateFin)}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" class="empty">Aucun projet</td></tr>';
+    const list = dons.content??[];
+    document.getElementById('cnt-don-d').textContent = (dons.totalElements??list.length) + ' dons';
+    document.getElementById('tb-don-d').innerHTML = list.length
+      ? list.map(d => `<tr>
+          <td><code>#${d.id}</code></td>
+          <td>${av(d.donateur?.utilisateur?.prenom, d.donateur?.utilisateur?.nom, d.donateur?.id)}</td>
+          <td style="font-size:.8rem">${d.projet?.nom??'—'}</td>
+          <td style="color:var(--em);font-weight:700">${N(d.montant)} MAD</td>
+          <td><span class="badge b-gray">${d.modePaiement??'—'}</span></td>
+          <td style="font-size:.76rem;color:var(--txt3)">${DT(d.dateDon)}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" class="empty">Aucun don</td></tr>';
+  } catch(e) { toast('Erreur dashboard : ' + e.message, false, true); }
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let n = 0; const step = Math.max(1, Math.ceil(target / 20));
+  const t = setInterval(() => { n = Math.min(n + step, target); el.textContent = n; if (n >= target) clearInterval(t); }, 40);
+}
+
+/* ════════════════════════════ PROJETS ════════════════════════════ */
+const PROJ_ICONS = {
+  school:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  health:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  food:'<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><line x1="7" y1="2" x2="7" y2="11"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"/>',
+  home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  water:'<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>',
+  care:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  mosque:'<rect x="1" y="11" width="22" height="11" rx="1"/><path d="M6 11V6a6 6 0 0 1 12 0v5"/><line x1="12" y1="2" x2="12" y2="6"/>',
+  charity:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+};
+const PROJ_THEMES = [
+  {g1:'#10b981',g2:'#059669',icon:'charity'},
+  {g1:'#3b82f6',g2:'#2563eb',icon:'charity'},
+  {g1:'#f59e0b',g2:'#d97706',icon:'charity'},
+  {g1:'#f43f5e',g2:'#e11d48',icon:'charity'},
+  {g1:'#8b5cf6',g2:'#7c3aed',icon:'charity'},
+  {g1:'#f97316',g2:'#ea580c',icon:'charity'},
+];
+function getProjectTheme(p) {
+  const t = ((p.nom||'')+(p.description||'')).toLowerCase();
+  if (/école|éducation|scolaire|cours|formation|univer|étude|enfant|jeune|scolar/.test(t)) return {g1:'#3b82f6',g2:'#6366f1',icon:'school'};
+  if (/santé|médic|hospit|soin|maladie|médecin|handicap|médicament|traitement/.test(t)) return {g1:'#f43f5e',g2:'#e11d48',icon:'health'};
+  if (/nourriture|aliment|manger|faim|repas|ramadan|iftar|food|colis/.test(t)) return {g1:'#f59e0b',g2:'#d97706',icon:'food'};
+  if (/maison|logement|abri|hébergement|construction|rénovation|domicile/.test(t)) return {g1:'#10b981',g2:'#059669',icon:'home'};
+  if (/eau|puits|hydraulique|assainissement|irrigation/.test(t)) return {g1:'#0891b2',g2:'#0e7490',icon:'water'};
+  if (/orphelin|veuve|pauvre|nécessiteux|défavoris|vulnérable|aide/.test(t)) return {g1:'#f97316',g2:'#ea580c',icon:'care'};
+  if (/mosque|mosquée|religion|islamique|coran|quran|prière/.test(t)) return {g1:'#8b5cf6',g2:'#7c3aed',icon:'mosque'};
+  return PROJ_THEMES[(p.id??0) % PROJ_THEMES.length];
+}
+
+let projetsCache = [];
+
+function renderProjCard(p) {
+  const th = getProjectTheme(p);
+  const pct = p.objectifMontant > 0 ? Math.min(100, Math.round((p.montantCollecte??0)/p.objectifMontant*100)) : 0;
+  const ico = PROJ_ICONS[th.icon] || PROJ_ICONS.charity;
+  const stMap = {EN_COURS:'b-green',TERMINE:'b-blue',ANNULE:'b-rose',EN_ATTENTE:'b-amber'};
+  const stLbl = {EN_COURS:'En cours',TERMINE:'Terminé',ANNULE:'Annulé',EN_ATTENTE:'En attente'};
+  const nomEsc = (p.nom||'').replace(/'/g,"\\'");
+  return `<div class="proj-card" onclick="viewProjet(${p.id})">
+    <div class="proj-card-banner" style="background:linear-gradient(135deg,${th.g1},${th.g2})">
+      <div class="proj-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ico}</svg></div>
+      <div class="proj-card-top-row">
+        <span class="proj-card-status badge ${stMap[p.statut]??'b-gray'}">${stLbl[p.statut]??p.statut}</span>
+        ${isAdmin() ? `<div class="proj-card-actions" onclick="event.stopPropagation()">
+          <button class="proj-btn-edit" onclick="editProjet(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="proj-btn-del" onclick="confirmDel('projet',${p.id},'${nomEsc}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        </div>` : ''}
+      </div>
+    </div>
+    <div class="proj-card-body">
+      <div class="proj-card-title">${p.nom}</div>
+      <div class="proj-card-desc">${p.description ? (p.description.length>90 ? p.description.substring(0,90)+'…' : p.description) : 'Aucune description — cliquez pour voir les détails.'}</div>
+      <div class="proj-card-prog-section">
+        <div class="proj-card-prog-labels">
+          <span style="color:${th.g1};font-weight:700;font-size:.9rem">${N(p.montantCollecte)} MAD</span>
+          <span style="color:var(--txt3);font-size:.75rem">/ ${N(p.objectifMontant)} MAD</span>
+        </div>
+        <div class="proj-prog-bar-wrap"><div class="proj-prog-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${th.g1},${th.g2})"></div></div>
+        <div class="proj-card-prog-pct">${pct}% atteint</div>
+      </div>
+      <div class="proj-card-footer">
+        <div class="proj-card-dates"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${D(p.dateDebut)} → ${D(p.dateFin)}</div>
+        <div class="proj-card-id">#${p.id}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function loadProjets() {
+  const grid = document.getElementById('proj-grid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--txt3)"><span class="loading-dot"></span> Chargement…</div>';
+  try {
+    projetsCache = await apiGet('/api/projets');
+    document.getElementById('cnt-proj').textContent = projetsCache.length + ' projets';
+    grid.innerHTML = projetsCache.length
+      ? projetsCache.map(renderProjCard).join('')
+      : '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--txt3)">Aucun projet disponible.</div>';
+  } catch(e) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--rose)">Erreur : ${e.message}</div>`;
+  }
+}
+
+function viewProjet(id) {
+  const p = projetsCache.find(x => x.id === id);
+  if (!p) return;
+  const th = getProjectTheme(p);
+  const pct = p.objectifMontant > 0 ? Math.min(100, Math.round((p.montantCollecte??0)/p.objectifMontant*100)) : 0;
+  const remaining = Math.max(0, (p.objectifMontant??0) - (p.montantCollecte??0));
+  const ico = PROJ_ICONS[th.icon] || PROJ_ICONS.charity;
+  const stLbl = {EN_COURS:'En cours',TERMINE:'Terminé',ANNULE:'Annulé',EN_ATTENTE:'En attente'};
+
+  document.getElementById('pv-banner').style.background = `linear-gradient(135deg,${th.g1},${th.g2})`;
+  document.getElementById('pv-icon').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ico}</svg>`;
+  document.getElementById('pv-title').textContent = p.nom;
+  document.getElementById('pv-status').textContent = stLbl[p.statut] ?? p.statut;
+
+  const collectedEl = document.getElementById('pv-collected');
+  collectedEl.textContent = N(p.montantCollecte) + ' MAD';
+  collectedEl.style.color = th.g1;
+
+  document.getElementById('pv-pct').textContent = pct + '%';
+  const fill = document.getElementById('pv-prog-fill');
+  fill.style.width = '0%';
+  fill.style.background = `linear-gradient(90deg,${th.g1},${th.g2})`;
+  setTimeout(() => { fill.style.width = pct + '%'; }, 80);
+
+  document.getElementById('pv-goal').textContent = N(p.objectifMontant) + ' MAD';
+  document.getElementById('pv-s-collected').textContent = N(p.montantCollecte) + ' MAD';
+  document.getElementById('pv-s-goal').textContent = N(p.objectifMontant) + ' MAD';
+  document.getElementById('pv-remaining').textContent = N(remaining) + ' MAD';
+
+  const desc = p.description?.trim();
+  document.getElementById('pv-desc').textContent = desc || 'Ce projet vise à apporter une aide concrète aux personnes dans le besoin. Votre don, même modeste, peut transformer des vies et offrir un avenir meilleur à ceux qui en ont le plus besoin. Chaque dirham compte et fait une différence réelle.';
+
+  document.getElementById('pv-debut').textContent = D(p.dateDebut);
+  document.getElementById('pv-fin').textContent = D(p.dateFin);
+
+  openModal('modal-proj-card');
+}
+
+function openAddModal() {
+  if (currentSection === 'projets') openAddProjet();
+  else if (currentSection === 'donateurs') openAddDonateur();
+  else if (currentSection === 'beneficiaires') openAddBenef();
+  else if (currentSection === 'dons') openAddDon();
+}
+
+async function openAddDon() {
+  ['don-modal-montant','don-modal-comment'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('don-modal-mode').value = 'Virement';
+  try {
+    const [donateurs, projets] = await Promise.all([apiGet('/api/donateurs'), apiGet('/api/projets')]);
+    document.getElementById('don-modal-donateur').innerHTML =
+      '<option value="">— Sélectionner un donateur —</option>' +
+      donateurs.map(d => `<option value="${d.id}">${d.utilisateur?.prenom??''} ${d.utilisateur?.nom??''}</option>`).join('');
+    document.getElementById('don-modal-projet').innerHTML =
+      '<option value="">— Sélectionner un projet —</option>' +
+      projets.map(p => `<option value="${p.id}">${p.nom}</option>`).join('');
+  } catch(e) {}
+  openModal('modal-don');
+}
+
+async function saveDon() {
+  const donateurId = document.getElementById('don-modal-donateur').value;
+  const projetId   = document.getElementById('don-modal-projet').value;
+  const montant    = parseFloat(document.getElementById('don-modal-montant').value);
+  const mode       = document.getElementById('don-modal-mode').value;
+  if (!donateurId) { toast('Sélectionner un donateur.', false, true); return; }
+  if (!projetId)   { toast('Sélectionner un projet.', false, true); return; }
+  if (!montant || montant <= 0) { toast('Montant invalide.', false, true); return; }
+  const btn = document.getElementById('btn-save-don-modal');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  try {
+    await apiPost('/api/dons', {
+      montant, modePaiement: mode,
+      commentaire: document.getElementById('don-modal-comment').value.trim() || null,
+      dateDon: new Date().toISOString(),
+      donateur: { id: parseInt(donateurId) },
+      projet: { id: parseInt(projetId) }
+    });
+    closeModal('modal-don');
+    toast('Don enregistré ✓', true);
+    loadDons(0);
+  } catch(e) { toast('Erreur : ' + e.message, false, true); }
+  finally { btn.disabled = false; btn.textContent = 'Enregistrer le don'; }
+}
+
+function openAddProjet() {
+  document.getElementById('modal-projet-title').textContent = 'Nouveau projet';
+  document.getElementById('proj-id').value = '';
+  ['proj-nom','proj-desc','proj-objectif','proj-debut','proj-fin'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('proj-statut').value = 'EN_ATTENTE';
+  openModal('modal-projet');
+}
+
+function editProjet(id) {
+  const p = projetsCache.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modal-projet-title').textContent = 'Modifier le projet';
+  document.getElementById('proj-id').value = id;
+  document.getElementById('proj-nom').value = p.nom ?? '';
+  document.getElementById('proj-desc').value = p.description ?? '';
+  document.getElementById('proj-objectif').value = p.objectifMontant ?? '';
+  document.getElementById('proj-statut').value = p.statut ?? 'EN_ATTENTE';
+  document.getElementById('proj-debut').value = p.dateDebut ?? '';
+  document.getElementById('proj-fin').value = p.dateFin ?? '';
+  openModal('modal-projet');
+}
+
+async function saveProjet() {
+  const id = document.getElementById('proj-id').value;
+  const nom = document.getElementById('proj-nom').value.trim();
+  const objectifMontant = parseFloat(document.getElementById('proj-objectif').value);
+  if (!nom || isNaN(objectifMontant)) { toast('Nom et objectif requis.', false, true); return; }
+  const body = {
+    nom, objectifMontant,
+    description: document.getElementById('proj-desc').value.trim() || null,
+    statut: document.getElementById('proj-statut').value,
+    dateDebut: document.getElementById('proj-debut').value || null,
+    dateFin: document.getElementById('proj-fin').value || null,
+  };
+  const btn = document.getElementById('btn-save-projet');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  try {
+    if (id) await apiPut(`/api/projets/${id}`, body);
+    else    await apiPost('/api/projets', body);
+    closeModal('modal-projet');
+    toast(id ? 'Projet mis à jour ✓' : 'Projet créé ✓', true);
+    loadProjets();
+  } catch(e) { toast('Erreur : ' + e.message, false, true); }
+  finally { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+}
+
+/* ════════════════════════════ DONATEURS ════════════════════════════ */
+let donateursCache = [];
+async function loadDonateurs() {
+  const tb = document.getElementById('tb-don-list');
+  tb.innerHTML = '<tr><td colspan="7" class="loading"><span class="loading-dot"></span>Chargement…</td></tr>';
+  try {
+    donateursCache = await apiGet('/api/donateurs');
+    document.getElementById('cnt-don-list').textContent = donateursCache.length + ' donateurs';
+    tb.innerHTML = donateursCache.length
+      ? donateursCache.map(d => `<tr>
+          <td><code>${d.id}</code></td>
+          <td>${av(d.utilisateur?.prenom, d.utilisateur?.nom, d.id)}</td>
+          <td style="font-size:.8rem">${d.utilisateur?.email??'—'}</td>
+          <td style="font-size:.78rem;color:var(--txt3)">${d.utilisateur?.telephone??'—'}</td>
+          <td><span class="badge b-green">${d.typeOrganisation??'—'}</span></td>
+          <td style="font-size:.78rem;color:var(--txt3)">${d.description??'—'}</td>
+          ${isAdmin() ? `<td>${actionBtns(`editDonateur(${d.id})`, `confirmDel('donateur',${d.id},'${(d.utilisateur?.prenom??'').replace(/'/g,"\\'")} ${(d.utilisateur?.nom??'').replace(/'/g,"\\'")}')`)}</td>` : ''}
+        </tr>`).join('')
+      : '<tr><td colspan="7" class="empty">Aucun donateur</td></tr>';
+  } catch(e) { tb.innerHTML = `<tr><td colspan="7" class="empty">Erreur : ${e.message}</td></tr>`; }
+}
+
+function openAddDonateur() {
+  document.getElementById('modal-don-title').textContent = 'Nouveau donateur';
+  document.getElementById('don-id').value = '';
+  document.getElementById('don-util-id').value = '';
+  ['don-prenom','don-nom','don-email','don-tel','don-pwd','don-adresse','don-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('don-type').value = 'Particulier';
+  document.getElementById('don-pwd-wrap').style.display = 'flex';
+  document.getElementById('don-pwd').required = true;
+  openModal('modal-donateur');
+}
+
+function editDonateur(id) {
+  const d = donateursCache.find(x => x.id === id);
+  if (!d) return;
+  document.getElementById('modal-don-title').textContent = 'Modifier le donateur';
+  document.getElementById('don-id').value = id;
+  document.getElementById('don-util-id').value = d.utilisateur?.id ?? '';
+  document.getElementById('don-prenom').value = d.utilisateur?.prenom ?? '';
+  document.getElementById('don-nom').value = d.utilisateur?.nom ?? '';
+  document.getElementById('don-email').value = d.utilisateur?.email ?? '';
+  document.getElementById('don-tel').value = d.utilisateur?.telephone ?? '';
+  document.getElementById('don-adresse').value = d.utilisateur?.adresse ?? '';
+  document.getElementById('don-type').value = d.typeOrganisation ?? 'Particulier';
+  document.getElementById('don-desc').value = d.description ?? '';
+  document.getElementById('don-pwd-wrap').style.display = 'none';
+  document.getElementById('don-pwd').required = false;
+  openModal('modal-donateur');
+}
+
+async function saveDonateur() {
+  const id = document.getElementById('don-id').value;
+  const utilId = document.getElementById('don-util-id').value;
+  const prenom = document.getElementById('don-prenom').value.trim();
+  const nom    = document.getElementById('don-nom').value.trim();
+  const email  = document.getElementById('don-email').value.trim();
+  const pwd    = document.getElementById('don-pwd').value;
+  if (!prenom || !nom || !email) { toast('Prénom, nom et email requis.', false, true); return; }
+  if (!id && !pwd) { toast('Mot de passe requis.', false, true); return; }
+  const btn = document.getElementById('btn-save-don');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  try {
+    if (id) {
+      // UPDATE: PUT /api/donateurs/:id avec l'utilisateur existant
+      await apiPut(`/api/donateurs/${id}`, {
+        utilisateur: {
+          id: parseInt(utilId), prenom, nom, email,
+          telephone: document.getElementById('don-tel').value.trim() || null,
+          adresse: document.getElementById('don-adresse').value.trim() || null,
+          motDePasse: '***', role: 'DONATEUR'
+        },
+        typeOrganisation: document.getElementById('don-type').value,
+        description: document.getElementById('don-desc').value.trim() || null
+      });
+      toast('Donateur mis à jour ✓', true);
+    } else {
+      // CREATE: register user → auto-créé comme DONATEUR → update extra fields
+      const newUser = await apiPost('/api/auth/register', {
+        prenom, nom, email, motDePasse: pwd,
+        telephone: document.getElementById('don-tel').value.trim() || null,
+        adresse: document.getElementById('don-adresse').value.trim() || null,
+        role: 'DONATEUR'
+      });
+      // Chercher le donateur nouvellement créé
+      const allDon = await apiGet('/api/donateurs');
+      const newDon = allDon.find(d => d.utilisateur?.email === email);
+      if (newDon) {
+        await apiPut(`/api/donateurs/${newDon.id}`, {
+          ...newDon,
+          typeOrganisation: document.getElementById('don-type').value,
+          description: document.getElementById('don-desc').value.trim() || null
+        });
+      }
+      toast('Donateur créé ✓', true);
+    }
+    closeModal('modal-donateur');
+    loadDonateurs();
+  } catch(e) { toast('Erreur : ' + e.message, false, true); }
+  finally { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+}
+
+/* ════════════════════════════ BÉNÉFICIAIRES ════════════════════════════ */
+let benefCache = [];
+async function loadBeneficiaires() {
+  const tb = document.getElementById('tb-benef');
+  tb.innerHTML = '<tr><td colspan="7" class="loading"><span class="loading-dot"></span>Chargement…</td></tr>';
+  try {
+    benefCache = await apiGet('/api/beneficiaires');
+    document.getElementById('cnt-benef').textContent = benefCache.length + ' bénéficiaires';
+    tb.innerHTML = benefCache.length
+      ? benefCache.map(b => `<tr class="tr-clickable" onclick="viewBenef(${b.id})">
+          <td><code>${b.id}</code></td>
+          <td>${av(b.utilisateur?.prenom, b.utilisateur?.nom, b.id)}</td>
+          <td style="font-size:.8rem">${b.utilisateur?.email??'—'}</td>
+          <td><span class="badge b-blue">${b.situationFamiliale??'—'}</span></td>
+          <td style="text-align:center;font-weight:600">${b.nombreEnfants??0}</td>
+          <td style="font-size:.78rem;color:var(--txt3)">${b.besoins??'—'}</td>
+          ${isAdmin() ? `<td onclick="event.stopPropagation()">${actionBtns(`editBenef(${b.id})`, `confirmDel('beneficiaire',${b.id},'${(b.utilisateur?.prenom??'').replace(/'/g,"\\'")} ${(b.utilisateur?.nom??'').replace(/'/g,"\\'")}')`)}</td>` : ''}
+        </tr>`).join('')
+      : '<tr><td colspan="7" class="empty">Aucun bénéficiaire</td></tr>';
+  } catch(e) { tb.innerHTML = `<tr><td colspan="7" class="empty">Erreur : ${e.message}</td></tr>`; }
+}
+
+function openAddBenef() {
+  document.getElementById('modal-benef-title').textContent = 'Nouveau bénéficiaire';
+  document.getElementById('benef-id').value = '';
+  document.getElementById('benef-util-id').value = '';
+  ['benef-prenom','benef-nom','benef-email','benef-tel','benef-pwd','benef-adresse','benef-besoins'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('benef-enfants').value = '0';
+  document.getElementById('benef-situation').value = '';
+  document.getElementById('benef-pwd-wrap').style.display = 'flex';
+  openModal('modal-benef');
+}
+
+function editBenef(id) {
+  const b = benefCache.find(x => x.id === id);
+  if (!b) return;
+  document.getElementById('modal-benef-title').textContent = 'Modifier le bénéficiaire';
+  document.getElementById('benef-id').value = id;
+  document.getElementById('benef-util-id').value = b.utilisateur?.id ?? '';
+  document.getElementById('benef-prenom').value = b.utilisateur?.prenom ?? '';
+  document.getElementById('benef-nom').value = b.utilisateur?.nom ?? '';
+  document.getElementById('benef-email').value = b.utilisateur?.email ?? '';
+  document.getElementById('benef-tel').value = b.utilisateur?.telephone ?? '';
+  document.getElementById('benef-adresse').value = b.utilisateur?.adresse ?? '';
+  document.getElementById('benef-situation').value = b.situationFamiliale ?? '';
+  document.getElementById('benef-enfants').value = b.nombreEnfants ?? 0;
+  document.getElementById('benef-besoins').value = b.besoins ?? '';
+  document.getElementById('benef-pwd-wrap').style.display = 'none';
+  openModal('modal-benef');
+}
+
+async function saveBeneficiaire() {
+  const id = document.getElementById('benef-id').value;
+  const utilId = document.getElementById('benef-util-id').value;
+  const prenom = document.getElementById('benef-prenom').value.trim();
+  const nom    = document.getElementById('benef-nom').value.trim();
+  const email  = document.getElementById('benef-email').value.trim();
+  const pwd    = document.getElementById('benef-pwd').value;
+  if (!prenom || !nom || !email) { toast('Prénom, nom et email requis.', false, true); return; }
+  if (!id && !pwd) { toast('Mot de passe requis.', false, true); return; }
+  const btn = document.getElementById('btn-save-benef');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  try {
+    if (id) {
+      await apiPut(`/api/beneficiaires/${id}`, {
+        utilisateur: {
+          id: parseInt(utilId), prenom, nom, email,
+          telephone: document.getElementById('benef-tel').value.trim() || null,
+          adresse: document.getElementById('benef-adresse').value.trim() || null,
+          motDePasse: '***', role: 'BENEFICIAIRE'
+        },
+        situationFamiliale: document.getElementById('benef-situation').value || null,
+        nombreEnfants: parseInt(document.getElementById('benef-enfants').value) || 0,
+        besoins: document.getElementById('benef-besoins').value.trim() || null
+      });
+      toast('Bénéficiaire mis à jour ✓', true);
+    } else {
+      await apiPost('/api/auth/register', {
+        prenom, nom, email, motDePasse: pwd,
+        telephone: document.getElementById('benef-tel').value.trim() || null,
+        adresse: document.getElementById('benef-adresse').value.trim() || null,
+        role: 'BENEFICIAIRE'
+      });
+      const allBenef = await apiGet('/api/beneficiaires');
+      const newBenef = allBenef.find(b => b.utilisateur?.email === email);
+      if (newBenef) {
+        await apiPut(`/api/beneficiaires/${newBenef.id}`, {
+          ...newBenef,
+          situationFamiliale: document.getElementById('benef-situation').value || null,
+          nombreEnfants: parseInt(document.getElementById('benef-enfants').value) || 0,
+          besoins: document.getElementById('benef-besoins').value.trim() || null
+        });
+      }
+      toast('Bénéficiaire créé ✓', true);
+    }
+    closeModal('modal-benef');
+    loadBeneficiaires();
+  } catch(e) { toast('Erreur : ' + e.message, false, true); }
+  finally { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+}
+
+/* ════════════════════════════ DONS ════════════════════════════ */
+async function loadDons(page) {
+  const tb = document.getElementById('tb-dons');
+  tb.innerHTML = '<tr><td colspan="8" class="loading"><span class="loading-dot"></span>Chargement…</td></tr>';
+  await loadAtmSelects();
+  try {
+    const data = await apiGet(`/api/dons?page=${page}&size=${PAGE}&sort=dateDon,desc`);
+    const list = data.content??[];
+    const total = data.totalElements??0;
+    const totalPages = data.totalPages??1;
+    document.getElementById('cnt-dons').textContent = total + ' dons';
+    document.getElementById('pager-info').textContent = `Page ${page+1} / ${totalPages} — ${total} résultats`;
+    document.getElementById('btn-prev').disabled = page === 0;
+    document.getElementById('btn-next').disabled = page >= totalPages - 1;
+    tb.innerHTML = list.length
+      ? list.map(d => `<tr>
+          <td><code>#${d.id}</code></td>
+          <td>${av(d.donateur?.utilisateur?.prenom, d.donateur?.utilisateur?.nom, d.donateur?.id)}</td>
+          <td style="font-size:.8rem">${d.projet?.nom??'—'}</td>
+          <td style="color:var(--em);font-weight:700">${N(d.montant)} MAD</td>
+          <td><span class="badge b-gray">${d.modePaiement??'—'}</span></td>
+          <td style="font-size:.76rem;color:var(--txt3)">${d.commentaire??'—'}</td>
+          <td style="font-size:.76rem;color:var(--txt3)">${DT(d.dateDon)}</td>
+          ${isAdmin() ? `<td>${actionBtns('', `confirmDel('don',${d.id},'don #${d.id}')`)}</td>` : ''}
+        </tr>`).join('')
+      : '<tr><td colspan="8" class="empty">Aucun don</td></tr>';
+  } catch(e) { tb.innerHTML = `<tr><td colspan="8" class="empty">Erreur : ${e.message}</td></tr>`; }
+}
+
+async function loadAtmSelects() {
+  try {
+    const [donateurs, projets] = await Promise.all([apiGet('/api/donateurs'), apiGet('/api/projets')]);
+    const selD = document.getElementById('atm-donateur');
+    const selP = document.getElementById('atm-projet');
+    const prevP = selP.value;
+
+    if (isAdmin()) {
+      const prevD = selD.value;
+      selD.innerHTML = '<option value="">— Sélectionner un donateur —</option>' +
+        donateurs.map(d => `<option value="${d.id}">${d.utilisateur?.prenom??''} ${d.utilisateur?.nom??''}</option>`).join('');
+      if (prevD) selD.value = prevD;
+    } else {
+      // Pour le donateur connecté : auto-sélectionner son propre compte
+      const me = donateurs.find(d => d.utilisateur?.email === currentUserEmail);
+      if (me) {
+        currentDonateurId = me.id;
+        selD.innerHTML = `<option value="${me.id}" selected>${me.utilisateur?.prenom??''} ${me.utilisateur?.nom??''}</option>`;
+        const avEl = document.getElementById('atm-don-av');
+        const nmEl = document.getElementById('atm-don-name');
+        if (avEl && nmEl) {
+          avEl.textContent = ((me.utilisateur?.prenom?.[0]??'')+(me.utilisateur?.nom?.[0]??'')).toUpperCase() || '?';
+          avEl.style.background = COLORS[(me.id??0) % COLORS.length];
+          nmEl.textContent = `${me.utilisateur?.prenom??''} ${me.utilisateur?.nom??''}`.trim();
+        }
+      }
+    }
+
+    selP.innerHTML = '<option value="">— Sélectionner un projet —</option>' +
+      projets.map(p => `<option value="${p.id}">${p.nom}</option>`).join('');
+    if (prevP) selP.value = prevP;
+  } catch(e) {}
+}
+
+function changePage(dir) { donsPage = Math.max(0, donsPage + dir); loadDons(donsPage); }
+
+/* ════════════════════════════ ATM KEYBOARD ════════════════════════════ */
+function atmKey(k) {
+  if (atmValue === '0') atmValue = k;
+  else if (atmValue.length < 9) atmValue += k;
+  updateAtmDisplay();
+}
+function atmDel() { atmValue = atmValue.length > 1 ? atmValue.slice(0,-1) : '0'; updateAtmDisplay(); }
+function atmClear() { atmValue = '0'; updateAtmDisplay(); }
+function updateAtmDisplay() { document.getElementById('atm-display').textContent = N(parseFloat(atmValue)||0).replace(/\.00$/, ''); }
+
+function selectBank(el, name) {
+  document.querySelectorAll('.bank-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBank = name;
+  const ppPanel = document.getElementById('paypal-panel');
+  if (ppPanel) ppPanel.style.display = name === 'PayPal' ? 'block' : 'none';
+  if (name !== 'PayPal') {
+    const ref = document.getElementById('paypal-ref');
+    if (ref) ref.value = '';
+  }
+}
+
+async function confirmerDon() {
+  const montant = parseFloat(atmValue);
+  const donateurId = document.getElementById('atm-donateur').value;
+  const projetId   = document.getElementById('atm-projet').value;
+  if (!montant || montant <= 0) { toast('Montant invalide.', false, true); return; }
+  if (!selectedBank) { toast('Veuillez sélectionner une banque / mode de paiement.', false, true); return; }
+  if (!donateurId)   { toast('Donateur introuvable.', false, true); return; }
+  if (!projetId)     { toast('Veuillez sélectionner un projet.', false, true); return; }
+
+  // Validation PayPal
+  let paypalRef = '';
+  if (selectedBank === 'PayPal') {
+    paypalRef = (document.getElementById('paypal-ref')?.value ?? '').trim();
+    if (!paypalRef) { toast('Veuillez saisir la référence de transaction PayPal.', false, true); return; }
+  }
+
+  const baseComment = document.getElementById('atm-comment').value.trim();
+  const commentaire = selectedBank === 'PayPal'
+    ? `[PayPal Réf: ${paypalRef}]${baseComment ? ' — ' + baseComment : ''}`
+    : (baseComment || null);
+
+  const btn = document.getElementById('btn-confirm-don');
+  btn.disabled = true; btn.textContent = '⏳ Traitement…';
+  const progWrap = document.getElementById('atm-prog-wrap');
+  const progFill = document.getElementById('atm-prog-fill');
+  progWrap.style.display = 'block';
+  setTimeout(() => { progFill.style.width = '100%'; }, 50);
+
+  try {
+    await apiPost('/api/dons', {
+      montant,
+      modePaiement: selectedBank,
+      commentaire,
+      dateDon: new Date().toISOString(),
+      donateur: { id: parseInt(donateurId) },
+      projet: { id: parseInt(projetId) }
+    });
+    setTimeout(() => {
+      toast(`Don de ${N(montant)} MAD confirmé ✓`, true);
+      confetti();
+      atmClear();
+      selectedBank = null;
+      document.querySelectorAll('.bank-chip').forEach(c => c.classList.remove('selected'));
+      document.getElementById('atm-comment').value = '';
+      const ppPanel = document.getElementById('paypal-panel');
+      if (ppPanel) ppPanel.style.display = 'none';
+      const ppRef = document.getElementById('paypal-ref');
+      if (ppRef) ppRef.value = '';
+      progWrap.style.display = 'none';
+      progFill.style.width = '0';
+      loadDons(0);
+    }, 1500);
+  } catch(e) {
+    toast('Erreur : ' + e.message, false, true);
+    progWrap.style.display = 'none'; progFill.style.width = '0';
+  } finally {
+    setTimeout(() => { btn.disabled = false; btn.textContent = '✦ Confirmer le don'; }, 1500);
+  }
+}
+
+/* ════════════════════════════ BÉNÉFICIAIRE FICHE ════════════════════════════ */
+function getBesoinInfo(besoins) {
+  const b = (besoins || '').toLowerCase();
+  if (/aliment|nourrit|manger|food|repas|faim|nourriture/.test(b)) return {
+    color:'#f59e0b', label:'Aide alimentaire',
+    svg:'<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><line x1="7" y1="2" x2="7" y2="11"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"/>'
+  };
+  if (/médic|santé|maladie|médecin|hospit|soin|médicament|traitement/.test(b)) return {
+    color:'#f43f5e', label:'Aide médicale',
+    svg:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'
+  };
+  if (/éducation|école|scolaire|étude|school|universit|livre|formation|cours/.test(b)) return {
+    color:'#3b82f6', label:'Aide éducative',
+    svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'
+  };
+  if (/logement|maison|abri|hébergement|loyer|chambre|domicile/.test(b)) return {
+    color:'#10b981', label:'Aide au logement',
+    svg:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
+  };
+  if (/vêtement|habit|cloth|habillement|tissu/.test(b)) return {
+    color:'#8b5cf6', label:'Aide vestimentaire',
+    svg:'<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>'
+  };
+  if (/emploi|travail|job|chômage|profession/.test(b)) return {
+    color:'#f97316', label:"Aide à l'emploi",
+    svg:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'
+  };
+  return {
+    color:'#059669', label:'Aide générale',
+    svg:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+  };
+}
+
+function viewBenef(id) {
+  const b = benefCache.find(x => x.id === id);
+  if (!b) return;
+  const u = b.utilisateur ?? {};
+  const prenom = u.prenom ?? '';
+  const nom = u.nom ?? '';
+  const besoin = getBesoinInfo(b.besoins);
+
+  // Bannière colorée selon catégorie de besoin
+  const banner = document.getElementById('bc-banner');
+  banner.style.background = `linear-gradient(135deg,${besoin.color}18,${besoin.color}30)`;
+  banner.style.borderBottom = `1px solid ${besoin.color}40`;
+
+  // Avatar
+  const avEl = document.getElementById('bc-avatar');
+  avEl.textContent = ((prenom[0]??'')+(nom[0]??'')).toUpperCase() || '?';
+  avEl.style.background = color(id);
+
+  // Identité
+  document.getElementById('bc-name').textContent = `${prenom} ${nom}`.trim() || '—';
+  document.getElementById('bc-email').textContent = u.email ?? '—';
+
+  // Informations
+  document.getElementById('bc-tel').textContent = u.telephone ?? '—';
+  document.getElementById('bc-adresse').textContent = u.adresse ?? '—';
+  document.getElementById('bc-situation').textContent = b.situationFamiliale ?? '—';
+  document.getElementById('bc-enfants').textContent = b.nombreEnfants ?? 0;
+
+  // Illustration du besoin
+  const illusEl = document.getElementById('bc-need-illus');
+  illusEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${besoin.svg}</svg>`;
+  illusEl.style.color = besoin.color;
+  illusEl.style.background = `${besoin.color}18`;
+  illusEl.style.border = `1px solid ${besoin.color}30`;
+
+  const badge = document.getElementById('bc-need-badge');
+  badge.textContent = besoin.label;
+  badge.style.background = `${besoin.color}20`;
+  badge.style.color = besoin.color;
+
+  document.getElementById('bc-need-text').textContent = b.besoins ?? 'Aucun besoin spécifié.';
+
+  openModal('modal-benef-card');
+}
+
+/* ════════════════════════════ DELETE ════════════════════════════ */
+let pendingDelete = null;
+function confirmDel(type, id, name) {
+  pendingDelete = { type, id };
+  document.getElementById('confirm-msg').textContent = `Supprimer "${name}" ? Cette action est irréversible.`;
+  document.getElementById('confirm-overlay').classList.add('open');
+  document.getElementById('btn-yes-del').onclick = doDelete;
+}
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); pendingDelete = null; }
+async function doDelete() {
+  if (!pendingDelete) return;
+  const { type, id } = pendingDelete;
+  closeConfirm();
+  try {
+    const urlMap = { projet:'/api/projets/', donateur:'/api/donateurs/', beneficiaire:'/api/beneficiaires/', don:'/api/dons/' };
+    await apiDel(urlMap[type] + id);
+    toast('Supprimé ✓', true);
+    load(currentSection);
+  } catch(e) { toast('Erreur : ' + e.message, false, true); }
+}
+
+/* ════════════════════════════ MODAL HELPERS ════════════════════════════ */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+/* ════════════════════════════ TOAST ════════════════════════════ */
+let toastTimer;
+function toast(msg, ok=false, err=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (ok?' ok':'') + (err?' err':'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 3200);
+}
+
+/* ════════════════════════════ RIPPLE ════════════════════════════ */
+function addRipple(btn, e) {
+  if (!e) return;
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  btn.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+}
+
+/* ════════════════════════════ CONFETTI ════════════════════════════ */
+function confetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#10b981','#f59e0b','#3b82f6','#f43f5e','#a855f7','#06b6d4','#ffffff'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'cf';
+    el.style.cssText = `
+      left:${Math.random()*100}vw;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*.5}s;
+      transform:rotate(${Math.random()*360}deg);
+      width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
+    `;
+    container.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+</script>
+</body>
+</html>
